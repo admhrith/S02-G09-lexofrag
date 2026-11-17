@@ -12,14 +12,16 @@
   <meta name="apple-mobile-web-app-title" content="LexoFrag Ops" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- App Typography: Plus Jakarta Sans (Display), Inter (UI), JetBrains Mono (SKUs) -->
+  <!-- App Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CSS v4 Play CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <!-- HTML5 QR & Barcode Scanner Library -->
+  <!-- Primary Engine: ZXing C++ WebAssembly (High-speed 1D & QR reader) -->
+  <script src="https://cdn.jsdelivr.net/npm/zxing-wasm@3.0.2/dist/iife/reader/index.js"></script>
+  <!-- Backup Engine: HTML5-QRCode -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 
   <style>
@@ -50,12 +52,6 @@
 
     .tabular-nums, input[type="number"] {
       font-variant-numeric: tabular-nums;
-    }
-
-    #reader video {
-      border-radius: 0.75rem;
-      object-fit: cover;
-      width: 100% !important;
     }
   </style>
 </head>
@@ -209,7 +205,7 @@
                 <h2 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">Scan Product Barcode</h2>
               </div>
               <div class="flex items-center gap-1.5">
-                <label id="snap-photo-label" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition cursor-pointer">
+                <label class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition cursor-pointer">
                   Snap Photo
                   <input id="photo-file-input" type="file" accept="image/*" capture="environment" onchange="handlePhotoScan(event)" class="hidden" />
                 </label>
@@ -223,12 +219,24 @@
               </div>
             </div>
 
-            <!-- Hidden containers for photo decoding & resizing -->
-            <div id="file-reader" class="hidden"></div>
+            <!-- Hidden backup reader element -->
+            <div id="fallback-reader" class="hidden"></div>
 
-            <!-- Live Camera Viewfinder -->
-            <div class="relative rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 overflow-hidden min-h-[240px] flex flex-col items-center justify-center">
-              <div id="reader" class="w-full"></div>
+            <!-- Native iOS/Android Inline Video Viewfinder -->
+            <div class="relative rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 overflow-hidden min-h-[250px] flex flex-col items-center justify-center">
+              <video id="scanner-video" class="hidden w-full max-h-[320px] object-cover bg-black" playsinline muted autoplay></video>
+
+              <!-- Live Scanning Frame Overlay & Status Pill -->
+              <div id="scanner-overlay" class="hidden pointer-events-none absolute inset-0 flex flex-col items-center justify-between p-3">
+                <span id="scanner-telemetry" class="font-mono text-[10px] font-semibold bg-slate-900/80 text-emerald-300 px-2.5 py-1 rounded-full">
+                  Engine Ready • Scanning...
+                </span>
+                <div class="w-4/5 h-28 border-2 border-emerald-400/80 rounded-xl shadow-[0_0_0_9999px_rgba(15,23,42,0.28)]"></div>
+                <span class="text-[11px] font-medium bg-slate-900/75 text-white px-2.5 py-0.5 rounded-md">
+                  Hold barcode 15–25 cm away
+                </span>
+              </div>
+
               <div id="camera-placeholder" class="p-6 text-center">
                 <div class="w-12 h-12 rounded-full bg-white border border-slate-200 shadow-2xs flex items-center justify-center mx-auto mb-2.5 text-slate-500">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
@@ -244,7 +252,7 @@
 
             <!-- Instant Scan Detection Banner -->
             <div id="scan-success-toast" class="hidden mt-3 p-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold flex items-center justify-between shadow-xs">
-              <span id="scan-success-text" class="font-mono">Scanned: LF-10ML-VAN</span>
+              <span id="scan-success-text" class="font-mono">Matched: LF-10ML-VAN</span>
               <button type="button" onclick="toggleCamera()" class="px-2.5 py-1 rounded-lg bg-white/20 hover:bg-white/30 text-[11px] font-bold cursor-pointer">
                 Scan Next
               </button>
@@ -285,7 +293,7 @@
         <!-- RIGHT COLUMN (7 cols): US02 Stock Update, Inventory List & Audit Log -->
         <section id="result-section" class="lg:col-span-7 flex flex-col gap-5 scroll-mt-20">
 
-          <!-- SKU Not Found Alert (With 1-Tap Register Option for Owner) -->
+          <!-- SKU Not Found Alert -->
           <div id="not-found-card" class="hidden bg-red-50 border-2 border-red-300 rounded-2xl p-4 shadow-xs">
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-start gap-3">
@@ -384,664 +392,4 @@
 
           <!-- Rack Inventory Overview + Owner Add SKU Button -->
           <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs">
-            <div class="flex items-center justify-between gap-2 mb-3">
-              <div>
-                <h3 class="text-sm font-bold text-slate-900">Rack Inventory List</h3>
-                <p class="text-[11px] text-slate-500">Tap any item to load into the stock adjuster</p>
-              </div>
-              <button
-                id="open-add-sku-btn"
-                type="button"
-                onclick="toggleAddSkuModal(true)"
-                class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white transition cursor-pointer">
-                + Add SKU
-              </button>
-            </div>
-
-            <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse">
-                <thead>
-                  <tr class="border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    <th class="py-2 pr-2">SKU</th>
-                    <th class="py-2 px-2">Fragrance</th>
-                    <th class="py-2 px-2">Rack</th>
-                    <th class="py-2 pl-2 text-right">Stock</th>
-                  </tr>
-                </thead>
-                <tbody id="inventory-table-body" class="divide-y divide-slate-100 text-xs"></tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Session Audit Trail -->
-          <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-bold text-slate-900">Audit Activity Log</h3>
-              <button
-                id="reset-db-btn"
-                type="button"
-                onclick="resetDemoData()"
-                class="text-[11px] font-semibold text-slate-500 hover:text-slate-900 underline cursor-pointer">
-                Reset Demo DB
-              </button>
-            </div>
-            <ul id="audit-log" class="space-y-2 text-xs text-slate-600">
-              <li class="py-2 text-center text-slate-400">No stock updates recorded in this session yet.</li>
-            </ul>
-          </div>
-
-        </section>
-      </div>
-    </main>
-  </div>
-
-  <!-- ======================================================================= -->
-  <!-- MODAL: ADD NEW SKU (OWNER ONLY)                                         -->
-  <!-- ======================================================================= -->
-  <div id="add-sku-modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-lg">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-base font-bold text-slate-900">Register New Fragrance SKU</h3>
-        <button type="button" onclick="toggleAddSkuModal(false)" class="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer">✕</button>
-      </div>
-
-      <form onsubmit="handleAddNewSku(event)" class="space-y-3.5">
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Barcode / SKU Code</label>
-          <input id="new-sku-code" type="text" required placeholder="e.g. LF-10ML-STR" class="w-full font-mono px-3 py-2 rounded-xl border border-slate-300 text-sm uppercase focus:outline-none focus:border-blue-600" />
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Product Name</label>
-          <input id="new-sku-name" type="text" required placeholder="e.g. Sweet Strawberry (10ml)" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600" />
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Rack Location</label>
-            <input id="new-sku-rack" type="text" required placeholder="e.g. Rack B2" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600" />
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Initial Stock</label>
-            <input id="new-sku-stock" type="number" min="0" required value="10" class="w-full tabular-nums px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600" />
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-2 pt-3">
-          <button type="button" onclick="toggleAddSkuModal(false)" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 cursor-pointer">
-            Cancel
-          </button>
-          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 cursor-pointer">
-            Save SKU
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    // =========================================================================
-    // SAFE STORAGE HELPER
-    // =========================================================================
-    const memoryFallback = {};
-    function safeGet(storageType, key) {
-      try { return window[storageType].getItem(key); } catch (e) { return memoryFallback[key] || null; }
-    }
-    function safeSet(storageType, key, value) {
-      try { window[storageType].setItem(key, value); } catch (e) { memoryFallback[key] = value; }
-    }
-    function safeRemove(storageType, key) {
-      try { window[storageType].removeItem(key); } catch (e) { delete memoryFallback[key]; }
-    }
-
-    // =========================================================================
-    // ENVIRONMENT CHECK
-    // =========================================================================
-    (function checkMobileEnvironment() {
-      const banner = document.getElementById("env-banner");
-      const text = document.getElementById("env-banner-text");
-      const isWhatsApp = /WhatsApp/i.test(navigator.userAgent);
-      const isSecure = window.location.protocol === "https:" ||
-                       window.location.hostname === "localhost" ||
-                       window.location.hostname === "127.0.0.1";
-
-      if (isWhatsApp) {
-        text.textContent = "You are inside WhatsApp's browser. Tap the Safari compass icon (bottom right) to enable camera scanning.";
-        banner.classList.remove("hidden");
-      } else if (!isSecure) {
-        text.textContent = "iPhone Safari blocks live camera on non-HTTPS links. Open via GitHub Pages HTTPS, or use 'Snap Photo'.";
-        banner.classList.remove("hidden");
-      }
-    })();
-
-    // =========================================================================
-    // UNLOCK AUDIO ON USER GESTURE (Allows iOS Safari Beep on Scan)
-    // =========================================================================
-    let sharedAudioCtx = null;
-    function unlockAudio() {
-      try {
-        if (!sharedAudioCtx) {
-          sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (sharedAudioCtx.state === "suspended") {
-          sharedAudioCtx.resume();
-        }
-      } catch (e) {}
-    }
-
-    function playBeep(isSuccess = true) {
-      if (navigator.vibrate) {
-        try { navigator.vibrate(isSuccess ? [80] : [60, 50, 60]); } catch (e) {}
-      }
-      try {
-        unlockAudio();
-        if (!sharedAudioCtx) return;
-        const osc = sharedAudioCtx.createOscillator();
-        const gain = sharedAudioCtx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(isSuccess ? 920 : 340, sharedAudioCtx.currentTime);
-        gain.gain.setValueAtTime(0.12, sharedAudioCtx.currentTime);
-        osc.connect(gain);
-        gain.connect(sharedAudioCtx.destination);
-        osc.start();
-        osc.stop(sharedAudioCtx.currentTime + (isSuccess ? 0.11 : 0.22));
-      } catch (e) {}
-    }
-
-    // =========================================================================
-    // AUTHENTICATION & USERS
-    // =========================================================================
-    const DEMO_USERS = {
-      "saif@lexofrag.my": { pass: "lexo123", name: "Encik Saif", role: "Owner" },
-      "staff@lexofrag.my": { pass: "staff123", name: "Storeroom Staff", role: "Admin" }
-    };
-
-    let currentUser = JSON.parse(safeGet("sessionStorage", "lexofrag_user")) || null;
-
-    function loginWithCredentials(email, pass) {
-      const errBox = document.getElementById("login-error");
-      const account = DEMO_USERS[email.trim().toLowerCase()];
-
-      if (!account || account.pass !== pass) {
-        errBox.textContent = "Invalid email or password. Use saif@lexofrag.my / lexo123 or click a Quick Demo Access card below.";
-        errBox.classList.remove("hidden");
-        return;
-      }
-
-      errBox.classList.add("hidden");
-      currentUser = { email: email.trim().toLowerCase(), name: account.name, role: account.role };
-      safeSet("sessionStorage", "lexofrag_user", JSON.stringify(currentUser));
-      renderAuthState();
-    }
-
-    function handleLogin(event) {
-      event.preventDefault();
-      loginWithCredentials(
-        document.getElementById("login-email").value,
-        document.getElementById("login-password").value
-      );
-    }
-
-    function quickLogin(email, pass) {
-      document.getElementById("login-email").value = email;
-      document.getElementById("login-password").value = pass;
-      loginWithCredentials(email, pass);
-    }
-
-    async function stopCameraSafely(nextButtonLabel = "Start Camera") {
-      if (html5QrCode) {
-        try {
-          if (isScanning) await html5QrCode.stop();
-          html5QrCode.clear();
-        } catch (e) {}
-      }
-      isScanning = false;
-      const btn = document.getElementById("toggle-camera-btn");
-      if (btn) {
-        btn.textContent = nextButtonLabel;
-        btn.classList.remove("bg-red-600", "hover:bg-red-700");
-        btn.classList.add("bg-emerald-600", "hover:bg-emerald-700");
-      }
-      const placeholder = document.getElementById("camera-placeholder");
-      if (placeholder) placeholder.classList.remove("hidden");
-    }
-
-    async function handleLogout() {
-      await stopCameraSafely("Start Camera");
-      currentUser = null;
-      safeRemove("sessionStorage", "lexofrag_user");
-      renderAuthState();
-    }
-
-    function renderAuthState() {
-      const loginView = document.getElementById("login-view");
-      const appView = document.getElementById("app-view");
-
-      if (!currentUser) {
-        loginView.classList.remove("hidden");
-        loginView.classList.add("flex");
-        appView.classList.add("hidden");
-        appView.classList.remove("flex");
-        return;
-      }
-
-      loginView.classList.add("hidden");
-      loginView.classList.remove("flex");
-      appView.classList.remove("hidden");
-      appView.classList.add("flex");
-
-      document.getElementById("nav-user-name").textContent = currentUser.name;
-      document.getElementById("nav-user-role").textContent = currentUser.role;
-
-      const isOwner = currentUser.role === "Owner";
-      document.getElementById("open-add-sku-btn").classList.toggle("hidden", !isOwner);
-      document.getElementById("reset-db-btn").classList.toggle("hidden", !isOwner);
-
-      refreshInventoryUI();
-      lookupBarcode(activeSku || "LF-10ML-VAN", false);
-    }
-
-    // =========================================================================
-    // MOCK DATABASE
-    // =========================================================================
-    const DEFAULT_INVENTORY = {
-      "LF-10ML-VAN": { sku: "LF-10ML-VAN", name: "Vanilla Mist (10ml Liquid)", rack: "Rack A1", stock: 24 },
-      "LF-10ML-COF": { sku: "LF-10ML-COF", name: "Roasted Arabica Coffee (10ml)", rack: "Rack A2", stock: 12 },
-      "LF-10ML-LAV": { sku: "LF-10ML-LAV", name: "Midnight Lavender (10ml)", rack: "Rack B1", stock: 3 }
-    };
-
-    let inventoryDB = JSON.parse(safeGet("localStorage", "lexofrag_db")) || structuredClone(DEFAULT_INVENTORY);
-    let activeSku = "LF-10ML-VAN";
-    let lastUnknownCode = "";
-    let html5QrCode = null;
-    let isScanning = false;
-
-    function persistDB() {
-      safeSet("localStorage", "lexofrag_db", JSON.stringify(inventoryDB));
-      refreshInventoryUI();
-    }
-
-    function refreshInventoryUI() {
-      const items = Object.values(inventoryDB);
-      document.getElementById("kpi-total-skus").textContent = items.length;
-      document.getElementById("kpi-total-units").textContent = items.reduce((sum, item) => sum + item.stock, 0);
-      document.getElementById("kpi-low-stock").textContent = items.filter(item => item.stock <= 5).length;
-
-      const tbody = document.getElementById("inventory-table-body");
-      tbody.innerHTML = items.map(item => {
-        const isSelected = item.sku === activeSku;
-        const stockBadge = item.stock <= 5
-          ? "bg-amber-50 text-amber-700 border-amber-200"
-          : "bg-emerald-50 text-emerald-700 border-emerald-200";
-        return `
-          <tr onclick="lookupBarcode('${item.sku}', true)" class="cursor-pointer transition ${isSelected ? 'bg-blue-50/70' : 'hover:bg-slate-50'}">
-            <td class="py-2.5 pr-2 font-mono font-semibold text-blue-700">${item.sku}</td>
-            <td class="py-2.5 px-2 font-medium text-slate-800">${item.name}</td>
-            <td class="py-2.5 px-2 text-slate-500">${item.rack}</td>
-            <td class="py-2.5 pl-2 text-right">
-              <span class="inline-block tabular-nums px-2 py-0.5 rounded-md font-bold border ${stockBadge}">${item.stock}</span>
-            </td>
-          </tr>
-        `;
-      }).join("");
-    }
-
-    function resetDemoData() {
-      inventoryDB = structuredClone(DEFAULT_INVENTORY);
-      persistDB();
-      lookupBarcode("LF-10ML-VAN", false);
-      document.getElementById("audit-log").innerHTML =
-        '<li class="py-2 text-center text-slate-400">Demo database reset to initial quantities.</li>';
-    }
-
-    // =========================================================================
-    // ADD NEW SKU MODAL
-    // =========================================================================
-    function toggleAddSkuModal(show) {
-      const modal = document.getElementById("add-sku-modal");
-      if (show) {
-        modal.classList.remove("hidden");
-        modal.classList.add("flex");
-      } else {
-        modal.classList.add("hidden");
-        modal.classList.remove("flex");
-      }
-    }
-
-    function openModalWithScannedCode() {
-      document.getElementById("new-sku-code").value = lastUnknownCode;
-      toggleAddSkuModal(true);
-    }
-
-    function handleAddNewSku(event) {
-      event.preventDefault();
-      const code = document.getElementById("new-sku-code").value.trim().toUpperCase();
-      const name = document.getElementById("new-sku-name").value.trim();
-      const rack = document.getElementById("new-sku-rack").value.trim();
-      const stock = parseInt(document.getElementById("new-sku-stock").value, 10) || 0;
-
-      inventoryDB[code] = { sku: code, name, rack, stock };
-      persistDB();
-      toggleAddSkuModal(false);
-      event.target.reset();
-      lookupBarcode(code, true);
-      showFeedback(`Registered & loaded SKU: ${code} (${stock} units).`, false);
-    }
-
-    // =========================================================================
-    // US01: FULL-FRAME LIVE SCANNER + DOWNSCALED IPHONE PHOTO DECODER
-    // =========================================================================
-    function createScannerInstance(elementId) {
-      const supportedFormats = typeof Html5QrcodeSupportedFormats !== "undefined" ? [
-        Html5QrcodeSupportedFormats.QR_CODE,
-        Html5QrcodeSupportedFormats.CODE_128,
-        Html5QrcodeSupportedFormats.CODE_39,
-        Html5QrcodeSupportedFormats.EAN_13,
-        Html5QrcodeSupportedFormats.EAN_8,
-        Html5QrcodeSupportedFormats.UPC_A,
-        Html5QrcodeSupportedFormats.UPC_E,
-        Html5QrcodeSupportedFormats.ITF
-      ] : undefined;
-
-      // Disable experimentalFeatures so iOS Safari uses reliable full-frame ZXing
-      return new Html5Qrcode(elementId, {
-        verbose: false,
-        experimentalFeatures: { useBarCodeDetectorIfSupported: false },
-        formatsToSupport: supportedFormats
-      });
-    }
-
-    // Immediate POS-style response whenever ANY barcode/QR is decoded
-    async function onBarcodeDetected(rawText) {
-      const cleanCode = rawText.trim().toUpperCase();
-      if (!cleanCode) return;
-
-      if (isScanning) {
-        await stopCameraSafely("Scan Next");
-      }
-
-      const exists = Boolean(inventoryDB[cleanCode]);
-      playBeep(exists);
-
-      const toast = document.getElementById("scan-success-toast");
-      toast.classList.remove("hidden", "bg-emerald-600", "bg-red-600");
-      toast.classList.add(exists ? "bg-emerald-600" : "bg-red-600");
-      document.getElementById("scan-success-text").textContent = exists
-        ? `Matched: ${cleanCode}`
-        : `Unregistered: ${cleanCode}`;
-
-      lookupBarcode(cleanCode, true);
-    }
-
-    async function toggleCamera() {
-      unlockAudio();
-      const btn = document.getElementById("toggle-camera-btn");
-      const placeholder = document.getElementById("camera-placeholder");
-      const alertBox = document.getElementById("camera-alert");
-      const toast = document.getElementById("scan-success-toast");
-      alertBox.classList.add("hidden");
-      toast.classList.add("hidden");
-
-      if (isScanning && html5QrCode) {
-        await stopCameraSafely("Start Camera");
-        return;
-      }
-
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alertBox.textContent = "Live camera requires HTTPS in Safari. Open via GitHub Pages https:// link, or tap 'Snap Photo'.";
-        alertBox.classList.remove("hidden");
-        return;
-      }
-
-      try {
-        placeholder.classList.add("hidden");
-        html5QrCode = createScannerInstance("reader");
-
-        // Full-frame scanning (no qrbox crop) so 1D barcode edges are never cut off
-        const config = { fps: 15 };
-
-        try {
-          await html5QrCode.start({ facingMode: "environment" }, config, onBarcodeDetected, () => {});
-        } catch (primaryErr) {
-          const cameras = await Html5Qrcode.getCameras();
-          if (cameras && cameras.length > 0) {
-            const backCam = cameras[cameras.length - 1].id;
-            await html5QrCode.start(backCam, config, onBarcodeDetected, () => {});
-          } else {
-            throw primaryErr;
-          }
-        }
-
-        isScanning = true;
-        btn.textContent = "Stop Camera";
-        btn.classList.remove("bg-emerald-600", "hover:bg-emerald-700");
-        btn.classList.add("bg-red-600", "hover:bg-red-700");
-      } catch (err) {
-        await stopCameraSafely("Start Camera");
-        alertBox.textContent = "Could not open live camera (check Safari Settings > Camera > Allow, and verify you are on an https:// link).";
-        alertBox.classList.remove("hidden");
-      }
-    }
-
-    // Resize high-res iPhone camera photos onto a canvas before decoding
-    function downscaleImageFile(file, maxDim = 1000, rotateDeg = 0) {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        const url = URL.createObjectURL(file);
-        img.onload = () => {
-          URL.revokeObjectURL(url);
-          let w = img.width;
-          let h = img.height;
-          if (w > maxDim || h > maxDim) {
-            if (w > h) {
-              h = Math.round((h * maxDim) / w);
-              w = maxDim;
-            } else {
-              w = Math.round((w * maxDim) / h);
-              h = maxDim;
-            }
-          }
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-          if (rotateDeg === 90) {
-            canvas.width = h;
-            canvas.height = w;
-            ctx.translate(h / 2, w / 2);
-            ctx.rotate(Math.PI / 2);
-            ctx.drawImage(img, -w / 2, -h / 2, w, h);
-          } else {
-            canvas.width = w;
-            canvas.height = h;
-            ctx.drawImage(img, 0, 0, w, h);
-          }
-          canvas.toBlob((blob) => {
-            if (!blob) return reject(new Error("Canvas conversion failed"));
-            resolve(new File([blob], "resized-scan.jpg", { type: "image/jpeg" }));
-          }, "image/jpeg", 0.92);
-        };
-        img.onerror = () => {
-          URL.revokeObjectURL(url);
-          reject(new Error("Failed to load image"));
-        };
-        img.src = url;
-      });
-    }
-
-    async function handlePhotoScan(event) {
-      unlockAudio();
-      const rawFile = event.target.files[0];
-      if (!rawFile) return;
-
-      if (isScanning) {
-        await stopCameraSafely("Start Camera");
-      }
-
-      const alertBox = document.getElementById("camera-alert");
-      const statusText = document.getElementById("placeholder-status");
-      alertBox.classList.add("hidden");
-      statusText.innerHTML = '<strong class="text-emerald-700">Reading barcode from photo...</strong>';
-
-      try {
-        const fileScanner = createScannerInstance("file-reader");
-        let decodedText = null;
-
-        // Pass 1: Downscaled upright image (fixes 12MP iPhone camera memory/scale failure)
-        try {
-          const resized0 = await downscaleImageFile(rawFile, 1000, 0);
-          decodedText = await fileScanner.scanFile(resized0, false);
-        } catch (e1) {
-          // Pass 2: Retry rotated 90 degrees in case 1D bars were vertical
-          const resized90 = await downscaleImageFile(rawFile, 1000, 90);
-          decodedText = await fileScanner.scanFile(resized90, false);
-        }
-
-        statusText.innerHTML = 'Tap <strong class="font-semibold text-slate-900">Start Camera</strong> to scan live, or <strong class="font-semibold text-slate-900">Snap Photo</strong> for a close-up shot.';
-        await onBarcodeDetected(decodedText);
-      } catch (err) {
-        statusText.innerHTML = 'Tap <strong class="font-semibold text-slate-900">Start Camera</strong> to scan live, or <strong class="font-semibold text-slate-900">Snap Photo</strong> for a close-up shot.';
-        playBeep(false);
-        alertBox.textContent = "Could not detect a barcode in that photo. Make sure the barcode is sharp, well-lit, and has white margin on both ends.";
-        alertBox.classList.remove("hidden");
-      } finally {
-        event.target.value = "";
-      }
-    }
-
-    function handleManualLookup(event) {
-      event.preventDefault();
-      unlockAudio();
-      const input = document.getElementById("manual-sku");
-      const code = input.value.trim().toUpperCase();
-      if (code) {
-        onBarcodeDetected(code);
-        input.value = "";
-      }
-    }
-
-    // =========================================================================
-    // US01 & US02: SKU LOOKUP & STOCK STEPPER LOGIC
-    // =========================================================================
-    function lookupBarcode(code, scrollToResult = false) {
-      const notFoundCard = document.getElementById("not-found-card");
-      const productCard = document.getElementById("product-card");
-      const resultSection = document.getElementById("result-section");
-      const feedback = document.getElementById("save-feedback");
-      feedback.classList.add("hidden");
-
-      const item = inventoryDB[code];
-      if (!item) {
-        lastUnknownCode = code;
-        document.getElementById("not-found-text").textContent =
-          `Barcode "${code}" is not registered in the inventory database.`;
-        notFoundCard.classList.remove("hidden");
-
-        const isOwner = currentUser && currentUser.role === "Owner";
-        document.getElementById("register-scanned-btn").classList.toggle("hidden", !isOwner);
-
-        if (scrollToResult) {
-          resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-        return;
-      }
-
-      notFoundCard.classList.add("hidden");
-      activeSku = item.sku;
-
-      document.getElementById("sku-badge").textContent = item.sku;
-      document.getElementById("product-name").textContent = item.name;
-      document.getElementById("product-meta").textContent = `Heat-Resistant Liquid Formula • ${item.rack}`;
-      document.getElementById("current-stock-display").textContent = item.stock;
-      document.getElementById("stock-input").value = item.stock;
-      refreshInventoryUI();
-
-      if (scrollToResult) {
-        productCard.classList.add("ring-2", "ring-emerald-500");
-        setTimeout(() => productCard.classList.remove("ring-2", "ring-emerald-500"), 1100);
-        if (window.innerWidth < 1024) {
-          resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }
-    }
-
-    function stepQuantity(delta) {
-      const input = document.getElementById("stock-input");
-      const currentVal = parseInt(input.value, 10) || 0;
-      const nextVal = currentVal + delta;
-
-      if (nextVal < 0) {
-        showFeedback("Error: Stock quantity cannot be negative (minimum 0).", true);
-        input.value = 0;
-        return;
-      }
-      document.getElementById("save-feedback").classList.add("hidden");
-      input.value = nextVal;
-    }
-
-    function handleDirectInput() {
-      const input = document.getElementById("stock-input");
-      if (parseInt(input.value, 10) < 0) {
-        showFeedback("Error: Stock quantity cannot be negative.", true);
-      } else {
-        document.getElementById("save-feedback").classList.add("hidden");
-      }
-    }
-
-    function saveStockUpdate() {
-      if (!activeSku || !inventoryDB[activeSku]) return;
-
-      const input = document.getElementById("stock-input");
-      const newStock = parseInt(input.value, 10);
-
-      if (isNaN(newStock) || newStock < 0) {
-        showFeedback("Save rejected: Stock balance cannot be negative.", true);
-        return;
-      }
-
-      const oldStock = inventoryDB[activeSku].stock;
-      const diff = newStock - oldStock;
-      inventoryDB[activeSku].stock = newStock;
-      persistDB();
-
-      document.getElementById("current-stock-display").textContent = newStock;
-      showFeedback(`Saved: ${activeSku} updated to ${newStock} units.`, false);
-      prependAuditLog(activeSku, oldStock, newStock, diff);
-    }
-
-    function showFeedback(message, isError) {
-      const box = document.getElementById("save-feedback");
-      box.textContent = message;
-      box.classList.remove("hidden", "bg-red-50", "text-red-700", "border-red-200", "bg-emerald-50", "text-emerald-700", "border-emerald-200");
-      box.classList.add("border");
-      if (isError) {
-        box.classList.add("bg-red-50", "text-red-700", "border-red-200");
-      } else {
-        box.classList.add("bg-emerald-50", "text-emerald-700", "border-emerald-200");
-      }
-    }
-
-    function prependAuditLog(sku, oldVal, newVal, diff) {
-      const log = document.getElementById("audit-log");
-      if (log.children.length === 1 && log.children[0].textContent.includes("No stock updates")) {
-        log.innerHTML = "";
-      }
-      const sign = diff > 0 ? `+${diff}` : `${diff}`;
-      const badgeColor = diff < 0 ? "text-red-600 bg-red-50 border-red-200" : "text-emerald-700 bg-emerald-50 border-emerald-200";
-      const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      const actor = currentUser ? currentUser.name : "Staff";
-
-      const li = document.createElement("li");
-      li.className = "flex items-center justify-between py-2.5 px-3 rounded-xl bg-slate-50 border border-slate-200";
-      li.innerHTML = `
-        <div>
-          <span class="font-mono text-slate-900 font-semibold">${sku}</span>
-          <span class="tabular-nums text-slate-600 ml-1">(${oldVal} → ${newVal})</span>
-          <span class="block text-[11px] text-slate-400">Updated by ${actor} at ${time}</span>
-        </div>
-        <span class="px-2 py-0.5 rounded-md font-mono tabular-nums font-bold border ${badgeColor}">${sign}</span>
-      `;
-      log.prepend(li);
-    }
-
-    // Boot App
-    renderAuthState();
-  </script>
-</body>
-</html>
+            <div class="flex items-center justify-between gap
