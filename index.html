@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-title" content="LexoFrag Ops" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Real App Typography: Plus Jakarta Sans (Display), Inter (UI), JetBrains Mono (SKUs) -->
+  <!-- App Typography: Plus Jakarta Sans (Display), Inter (UI), JetBrains Mono (SKUs) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -48,7 +48,6 @@
       letter-spacing: -0.02em;
     }
 
-    /* Prevent numbers from shifting width when tapping + or - */
     .tabular-nums, input[type="number"] {
       font-variant-numeric: tabular-nums;
     }
@@ -62,7 +61,7 @@
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900">
 
-  <!-- Environment Warning Banner (Shows if opened via file://, HTTP, or WhatsApp in-app browser) -->
+  <!-- Environment Warning Banner -->
   <div id="env-banner" class="hidden bg-amber-50 border-b border-amber-200 px-4 py-2.5 text-xs text-amber-900">
     <div class="max-w-6xl mx-auto flex items-center justify-between gap-2">
       <p id="env-banner-text" class="font-medium"></p>
@@ -75,7 +74,6 @@
   <!-- ======================================================================= -->
   <div id="login-view" class="flex-1 flex items-center justify-center p-4 sm:p-6">
     <div class="w-full max-w-md bg-white border border-slate-200/90 rounded-2xl shadow-sm p-6 sm:p-8">
-      <!-- Brand Header -->
       <div class="flex items-center gap-3 mb-6">
         <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-display font-extrabold text-lg shadow-xs">
           LF
@@ -121,7 +119,6 @@
         </button>
       </form>
 
-      <!-- One-Click Demo Accounts -->
       <div class="mt-6 pt-5 border-t border-slate-200">
         <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">Quick Demo Access</p>
         <div class="grid grid-cols-2 gap-2.5">
@@ -147,7 +144,7 @@
   </div>
 
   <!-- ======================================================================= -->
-  <!-- VIEW 2: MAIN OPERATIONS WORKSPACE (HIDDEN UNTIL LOGGED IN)              -->
+  <!-- VIEW 2: MAIN OPERATIONS WORKSPACE                                       -->
   <!-- ======================================================================= -->
   <div id="app-view" class="hidden flex-1 flex-col">
 
@@ -212,10 +209,9 @@
                 <h2 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">Scan Product Barcode</h2>
               </div>
               <div class="flex items-center gap-1.5">
-                <!-- Native iOS/Android Camera Photo Capture Fallback -->
-                <label class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition cursor-pointer">
+                <label id="snap-photo-label" class="px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition cursor-pointer">
                   Snap Photo
-                  <input type="file" accept="image/*" capture="environment" onchange="handlePhotoScan(event)" class="hidden" />
+                  <input id="photo-file-input" type="file" accept="image/*" capture="environment" onchange="handlePhotoScan(event)" class="hidden" />
                 </label>
                 <button
                   id="toggle-camera-btn"
@@ -227,7 +223,7 @@
               </div>
             </div>
 
-            <!-- Hidden container used only for photo barcode decoding -->
+            <!-- Hidden containers for photo decoding & resizing -->
             <div id="file-reader" class="hidden"></div>
 
             <!-- Live Camera Viewfinder -->
@@ -240,17 +236,21 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 14.625h2.25m2.25 0h1.5m-6 3h1.5m2.25 0h2.25m-6 2.25h6" />
                   </svg>
                 </div>
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Tap <strong class="font-semibold text-slate-900">Start Camera</strong> and hold a <strong class="font-semibold text-slate-900">Code-128</strong> or <strong class="font-semibold text-slate-900">QR</strong> barcode 15–20 cm from the lens.</p>
+                <p id="placeholder-status" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  Tap <strong class="font-semibold text-slate-900">Start Camera</strong> to scan live, or <strong class="font-semibold text-slate-900">Snap Photo</strong> for a close-up shot.
+                </p>
               </div>
             </div>
 
-            <!-- Live Scan Success Toast -->
-            <div id="scan-success-toast" class="hidden mt-3 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 flex items-center justify-between">
-              <span id="scan-success-text" class="font-mono">Detected: LF-10ML-VAN</span>
-              <span class="text-[10px] uppercase tracking-wider bg-emerald-600 text-white px-2 py-0.5 rounded-md">Matched</span>
+            <!-- Instant Scan Detection Banner -->
+            <div id="scan-success-toast" class="hidden mt-3 p-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold flex items-center justify-between shadow-xs">
+              <span id="scan-success-text" class="font-mono">Scanned: LF-10ML-VAN</span>
+              <button type="button" onclick="toggleCamera()" class="px-2.5 py-1 rounded-lg bg-white/20 hover:bg-white/30 text-[11px] font-bold cursor-pointer">
+                Scan Next
+              </button>
             </div>
 
-            <!-- Camera Error / Info Alert -->
+            <!-- Camera Error / Processing Alert -->
             <div id="camera-alert" class="hidden mt-3 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 leading-relaxed"></div>
 
             <!-- Manual Barcode Lookup Fallback -->
@@ -273,26 +273,35 @@
             <div class="mt-4 pt-3.5 border-t border-slate-200">
               <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">QA Quick Simulate Scan</p>
               <div class="flex flex-wrap gap-1.5">
-                <button type="button" onclick="lookupBarcode('LF-10ML-VAN', true)" class="font-mono px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-VAN</button>
-                <button type="button" onclick="lookupBarcode('LF-10ML-COF', true)" class="font-mono px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-COF</button>
-                <button type="button" onclick="lookupBarcode('LF-10ML-LAV', true)" class="font-mono px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-LAV</button>
-                <button type="button" onclick="lookupBarcode('INVALID-999', true)" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 cursor-pointer">Unknown SKU</button>
+                <button type="button" onclick="onBarcodeDetected('LF-10ML-VAN')" class="font-mono px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-VAN</button>
+                <button type="button" onclick="onBarcodeDetected('LF-10ML-COF')" class="font-mono px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-COF</button>
+                <button type="button" onclick="onBarcodeDetected('LF-10ML-LAV')" class="font-mono px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-LAV</button>
+                <button type="button" onclick="onBarcodeDetected('INVALID-999')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 cursor-pointer">Unknown SKU</button>
               </div>
             </div>
           </div>
         </section>
 
         <!-- RIGHT COLUMN (7 cols): US02 Stock Update, Inventory List & Audit Log -->
-        <section class="lg:col-span-7 flex flex-col gap-5">
+        <section id="result-section" class="lg:col-span-7 flex flex-col gap-5 scroll-mt-20">
 
-          <!-- SKU Not Found Alert -->
-          <div id="not-found-card" class="hidden bg-red-50 border border-red-200 rounded-2xl p-4">
-            <div class="flex items-start gap-3">
-              <span class="w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs shrink-0">!</span>
-              <div>
-                <h3 class="text-sm font-bold text-red-800">SKU Not Found</h3>
-                <p id="not-found-text" class="text-xs text-red-700 mt-0.5">Barcode is not registered in the LexoFrag inventory database.</p>
+          <!-- SKU Not Found Alert (With 1-Tap Register Option for Owner) -->
+          <div id="not-found-card" class="hidden bg-red-50 border-2 border-red-300 rounded-2xl p-4 shadow-xs">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-start gap-3">
+                <span class="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">!</span>
+                <div>
+                  <h3 class="text-sm font-bold text-red-900">SKU Not Found</h3>
+                  <p id="not-found-text" class="text-xs text-red-800 mt-0.5">Barcode is not registered in the LexoFrag inventory database.</p>
+                </div>
               </div>
+              <button
+                id="register-scanned-btn"
+                type="button"
+                onclick="openModalWithScannedCode()"
+                class="hidden shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-700 hover:bg-red-800 text-white transition cursor-pointer">
+                + Register SKU
+              </button>
             </div>
           </div>
 
@@ -470,33 +479,21 @@
 
   <script>
     // =========================================================================
-    // SAFE STORAGE HELPER (Prevents crashes in iOS restricted webviews)
+    // SAFE STORAGE HELPER
     // =========================================================================
     const memoryFallback = {};
     function safeGet(storageType, key) {
-      try {
-        return window[storageType].getItem(key);
-      } catch (e) {
-        return memoryFallback[key] || null;
-      }
+      try { return window[storageType].getItem(key); } catch (e) { return memoryFallback[key] || null; }
     }
     function safeSet(storageType, key, value) {
-      try {
-        window[storageType].setItem(key, value);
-      } catch (e) {
-        memoryFallback[key] = value;
-      }
+      try { window[storageType].setItem(key, value); } catch (e) { memoryFallback[key] = value; }
     }
     function safeRemove(storageType, key) {
-      try {
-        window[storageType].removeItem(key);
-      } catch (e) {
-        delete memoryFallback[key];
-      }
+      try { window[storageType].removeItem(key); } catch (e) { delete memoryFallback[key]; }
     }
 
     // =========================================================================
-    // ENVIRONMENT CHECK (HTTPS & WhatsApp In-App Browser Detection)
+    // ENVIRONMENT CHECK
     // =========================================================================
     (function checkMobileEnvironment() {
       const banner = document.getElementById("env-banner");
@@ -514,6 +511,40 @@
         banner.classList.remove("hidden");
       }
     })();
+
+    // =========================================================================
+    // UNLOCK AUDIO ON USER GESTURE (Allows iOS Safari Beep on Scan)
+    // =========================================================================
+    let sharedAudioCtx = null;
+    function unlockAudio() {
+      try {
+        if (!sharedAudioCtx) {
+          sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (sharedAudioCtx.state === "suspended") {
+          sharedAudioCtx.resume();
+        }
+      } catch (e) {}
+    }
+
+    function playBeep(isSuccess = true) {
+      if (navigator.vibrate) {
+        try { navigator.vibrate(isSuccess ? [80] : [60, 50, 60]); } catch (e) {}
+      }
+      try {
+        unlockAudio();
+        if (!sharedAudioCtx) return;
+        const osc = sharedAudioCtx.createOscillator();
+        const gain = sharedAudioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(isSuccess ? 920 : 340, sharedAudioCtx.currentTime);
+        gain.gain.setValueAtTime(0.12, sharedAudioCtx.currentTime);
+        osc.connect(gain);
+        gain.connect(sharedAudioCtx.destination);
+        osc.start();
+        osc.stop(sharedAudioCtx.currentTime + (isSuccess ? 0.11 : 0.22));
+      } catch (e) {}
+    }
 
     // =========================================================================
     // AUTHENTICATION & USERS
@@ -543,9 +574,10 @@
 
     function handleLogin(event) {
       event.preventDefault();
-      const email = document.getElementById("login-email").value;
-      const pass = document.getElementById("login-password").value;
-      loginWithCredentials(email, pass);
+      loginWithCredentials(
+        document.getElementById("login-email").value,
+        document.getElementById("login-password").value
+      );
     }
 
     function quickLogin(email, pass) {
@@ -554,19 +586,17 @@
       loginWithCredentials(email, pass);
     }
 
-    async function stopCameraSafely() {
+    async function stopCameraSafely(nextButtonLabel = "Start Camera") {
       if (html5QrCode) {
         try {
-          if (isScanning) {
-            await html5QrCode.stop();
-          }
+          if (isScanning) await html5QrCode.stop();
           html5QrCode.clear();
         } catch (e) {}
       }
       isScanning = false;
       const btn = document.getElementById("toggle-camera-btn");
       if (btn) {
-        btn.textContent = "Start Camera";
+        btn.textContent = nextButtonLabel;
         btn.classList.remove("bg-red-600", "hover:bg-red-700");
         btn.classList.add("bg-emerald-600", "hover:bg-emerald-700");
       }
@@ -575,7 +605,7 @@
     }
 
     async function handleLogout() {
-      await stopCameraSafely();
+      await stopCameraSafely("Start Camera");
       currentUser = null;
       safeRemove("sessionStorage", "lexofrag_user");
       renderAuthState();
@@ -599,8 +629,7 @@
       appView.classList.add("flex");
 
       document.getElementById("nav-user-name").textContent = currentUser.name;
-      const roleBadge = document.getElementById("nav-user-role");
-      roleBadge.textContent = currentUser.role;
+      document.getElementById("nav-user-role").textContent = currentUser.role;
 
       const isOwner = currentUser.role === "Owner";
       document.getElementById("open-add-sku-btn").classList.toggle("hidden", !isOwner);
@@ -621,10 +650,9 @@
 
     let inventoryDB = JSON.parse(safeGet("localStorage", "lexofrag_db")) || structuredClone(DEFAULT_INVENTORY);
     let activeSku = "LF-10ML-VAN";
+    let lastUnknownCode = "";
     let html5QrCode = null;
     let isScanning = false;
-    let lastScannedCode = "";
-    let lastScanTimestamp = 0;
 
     function persistDB() {
       safeSet("localStorage", "lexofrag_db", JSON.stringify(inventoryDB));
@@ -633,13 +661,9 @@
 
     function refreshInventoryUI() {
       const items = Object.values(inventoryDB);
-      const totalSkus = items.length;
-      const totalUnits = items.reduce((sum, item) => sum + item.stock, 0);
-      const lowStockCount = items.filter(item => item.stock <= 5).length;
-
-      document.getElementById("kpi-total-skus").textContent = totalSkus;
-      document.getElementById("kpi-total-units").textContent = totalUnits;
-      document.getElementById("kpi-low-stock").textContent = lowStockCount;
+      document.getElementById("kpi-total-skus").textContent = items.length;
+      document.getElementById("kpi-total-units").textContent = items.reduce((sum, item) => sum + item.stock, 0);
+      document.getElementById("kpi-low-stock").textContent = items.filter(item => item.stock <= 5).length;
 
       const tbody = document.getElementById("inventory-table-body");
       tbody.innerHTML = items.map(item => {
@@ -682,6 +706,11 @@
       }
     }
 
+    function openModalWithScannedCode() {
+      document.getElementById("new-sku-code").value = lastUnknownCode;
+      toggleAddSkuModal(true);
+    }
+
     function handleAddNewSku(event) {
       event.preventDefault();
       const code = document.getElementById("new-sku-code").value.trim().toUpperCase();
@@ -694,11 +723,11 @@
       toggleAddSkuModal(false);
       event.target.reset();
       lookupBarcode(code, true);
-      showFeedback(`Added new SKU: ${code} (${stock} units).`, false);
+      showFeedback(`Registered & loaded SKU: ${code} (${stock} units).`, false);
     }
 
     // =========================================================================
-    // US01: IMPROVED 1D & QR BARCODE SCANNER (Wider Box + Hardware Detection)
+    // US01: FULL-FRAME LIVE SCANNER + DOWNSCALED IPHONE PHOTO DECODER
     // =========================================================================
     function createScannerInstance(elementId) {
       const supportedFormats = typeof Html5QrcodeSupportedFormats !== "undefined" ? [
@@ -707,39 +736,43 @@
         Html5QrcodeSupportedFormats.CODE_39,
         Html5QrcodeSupportedFormats.EAN_13,
         Html5QrcodeSupportedFormats.EAN_8,
-        Html5QrcodeSupportedFormats.UPC_A
+        Html5QrcodeSupportedFormats.UPC_A,
+        Html5QrcodeSupportedFormats.UPC_E,
+        Html5QrcodeSupportedFormats.ITF
       ] : undefined;
 
+      // Disable experimentalFeatures so iOS Safari uses reliable full-frame ZXing
       return new Html5Qrcode(elementId, {
         verbose: false,
-        experimentalFeatures: { useBarCodeDetectorIfSupported: true },
+        experimentalFeatures: { useBarCodeDetectorIfSupported: false },
         formatsToSupport: supportedFormats
       });
     }
 
-    function triggerScanFeedback(code) {
-      if (navigator.vibrate) {
-        try { navigator.vibrate(90); } catch (e) {}
+    // Immediate POS-style response whenever ANY barcode/QR is decoded
+    async function onBarcodeDetected(rawText) {
+      const cleanCode = rawText.trim().toUpperCase();
+      if (!cleanCode) return;
+
+      if (isScanning) {
+        await stopCameraSafely("Scan Next");
       }
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.08, ctx.currentTime);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.09);
-      } catch (e) {}
+
+      const exists = Boolean(inventoryDB[cleanCode]);
+      playBeep(exists);
 
       const toast = document.getElementById("scan-success-toast");
-      document.getElementById("scan-success-text").textContent = `Scanned: ${code}`;
-      toast.classList.remove("hidden");
+      toast.classList.remove("hidden", "bg-emerald-600", "bg-red-600");
+      toast.classList.add(exists ? "bg-emerald-600" : "bg-red-600");
+      document.getElementById("scan-success-text").textContent = exists
+        ? `Matched: ${cleanCode}`
+        : `Unregistered: ${cleanCode}`;
+
+      lookupBarcode(cleanCode, true);
     }
 
     async function toggleCamera() {
+      unlockAudio();
       const btn = document.getElementById("toggle-camera-btn");
       const placeholder = document.getElementById("camera-placeholder");
       const alertBox = document.getElementById("camera-alert");
@@ -748,12 +781,12 @@
       toast.classList.add("hidden");
 
       if (isScanning && html5QrCode) {
-        await stopCameraSafely();
+        await stopCameraSafely("Start Camera");
         return;
       }
 
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alertBox.textContent = "Live camera requires HTTPS in Safari. Open via your GitHub Pages https:// link, or tap 'Snap Photo' above.";
+        alertBox.textContent = "Live camera requires HTTPS in Safari. Open via GitHub Pages https:// link, or tap 'Snap Photo'.";
         alertBox.classList.remove("hidden");
         return;
       }
@@ -762,39 +795,16 @@
         placeholder.classList.add("hidden");
         html5QrCode = createScannerInstance("reader");
 
-        const config = {
-          fps: 15,
-          qrbox: (viewfinderWidth, viewfinderHeight) => ({
-            width: Math.max(220, Math.floor(viewfinderWidth * 0.85)),
-            height: Math.max(110, Math.floor(viewfinderHeight * 0.45))
-          }),
-          videoConstraints: {
-            facingMode: "environment",
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          }
-        };
-
-        const onScanSuccess = (decodedText) => {
-          const cleanCode = decodedText.trim().toUpperCase();
-          const now = Date.now();
-          if (cleanCode === lastScannedCode && (now - lastScanTimestamp) < 1500) {
-            return;
-          }
-          lastScannedCode = cleanCode;
-          lastScanTimestamp = now;
-
-          triggerScanFeedback(cleanCode);
-          lookupBarcode(cleanCode, true);
-        };
+        // Full-frame scanning (no qrbox crop) so 1D barcode edges are never cut off
+        const config = { fps: 15 };
 
         try {
-          await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, () => {});
+          await html5QrCode.start({ facingMode: "environment" }, config, onBarcodeDetected, () => {});
         } catch (primaryErr) {
           const cameras = await Html5Qrcode.getCameras();
           if (cameras && cameras.length > 0) {
             const backCam = cameras[cameras.length - 1].id;
-            await html5QrCode.start(backCam, { fps: config.fps, qrbox: config.qrbox }, onScanSuccess, () => {});
+            await html5QrCode.start(backCam, config, onBarcodeDetected, () => {});
           } else {
             throw primaryErr;
           }
@@ -805,27 +815,90 @@
         btn.classList.remove("bg-emerald-600", "hover:bg-emerald-700");
         btn.classList.add("bg-red-600", "hover:bg-red-700");
       } catch (err) {
-        await stopCameraSafely();
-        alertBox.textContent = "Could not open live camera (check Safari Settings > Camera > Allow, and verify you are on an https:// link). You can also tap 'Snap Photo' above.";
+        await stopCameraSafely("Start Camera");
+        alertBox.textContent = "Could not open live camera (check Safari Settings > Camera > Allow, and verify you are on an https:// link).";
         alertBox.classList.remove("hidden");
       }
     }
 
+    // Resize high-res iPhone camera photos onto a canvas before decoding
+    function downscaleImageFile(file, maxDim = 1000, rotateDeg = 0) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          if (rotateDeg === 90) {
+            canvas.width = h;
+            canvas.height = w;
+            ctx.translate(h / 2, w / 2);
+            ctx.rotate(Math.PI / 2);
+            ctx.drawImage(img, -w / 2, -h / 2, w, h);
+          } else {
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(img, 0, 0, w, h);
+          }
+          canvas.toBlob((blob) => {
+            if (!blob) return reject(new Error("Canvas conversion failed"));
+            resolve(new File([blob], "resized-scan.jpg", { type: "image/jpeg" }));
+          }, "image/jpeg", 0.92);
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error("Failed to load image"));
+        };
+        img.src = url;
+      });
+    }
+
     async function handlePhotoScan(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+      unlockAudio();
+      const rawFile = event.target.files[0];
+      if (!rawFile) return;
+
+      if (isScanning) {
+        await stopCameraSafely("Start Camera");
+      }
 
       const alertBox = document.getElementById("camera-alert");
+      const statusText = document.getElementById("placeholder-status");
       alertBox.classList.add("hidden");
+      statusText.innerHTML = '<strong class="text-emerald-700">Reading barcode from photo...</strong>';
 
       try {
         const fileScanner = createScannerInstance("file-reader");
-        const decodedText = await fileScanner.scanFile(file, false);
-        const cleanCode = decodedText.trim().toUpperCase();
-        triggerScanFeedback(cleanCode);
-        lookupBarcode(cleanCode, true);
+        let decodedText = null;
+
+        // Pass 1: Downscaled upright image (fixes 12MP iPhone camera memory/scale failure)
+        try {
+          const resized0 = await downscaleImageFile(rawFile, 1000, 0);
+          decodedText = await fileScanner.scanFile(resized0, false);
+        } catch (e1) {
+          // Pass 2: Retry rotated 90 degrees in case 1D bars were vertical
+          const resized90 = await downscaleImageFile(rawFile, 1000, 90);
+          decodedText = await fileScanner.scanFile(resized90, false);
+        }
+
+        statusText.innerHTML = 'Tap <strong class="font-semibold text-slate-900">Start Camera</strong> to scan live, or <strong class="font-semibold text-slate-900">Snap Photo</strong> for a close-up shot.';
+        await onBarcodeDetected(decodedText);
       } catch (err) {
-        alertBox.textContent = "No readable Code-128 barcode or QR code found in that photo. Hold 15–20 cm away in good lighting, or use Manual SKU Entry.";
+        statusText.innerHTML = 'Tap <strong class="font-semibold text-slate-900">Start Camera</strong> to scan live, or <strong class="font-semibold text-slate-900">Snap Photo</strong> for a close-up shot.';
+        playBeep(false);
+        alertBox.textContent = "Could not detect a barcode in that photo. Make sure the barcode is sharp, well-lit, and has white margin on both ends.";
         alertBox.classList.remove("hidden");
       } finally {
         event.target.value = "";
@@ -834,10 +907,11 @@
 
     function handleManualLookup(event) {
       event.preventDefault();
+      unlockAudio();
       const input = document.getElementById("manual-sku");
       const code = input.value.trim().toUpperCase();
       if (code) {
-        lookupBarcode(code, true);
+        onBarcodeDetected(code);
         input.value = "";
       }
     }
@@ -845,19 +919,25 @@
     // =========================================================================
     // US01 & US02: SKU LOOKUP & STOCK STEPPER LOGIC
     // =========================================================================
-    function lookupBarcode(code, scrollToCard = false) {
+    function lookupBarcode(code, scrollToResult = false) {
       const notFoundCard = document.getElementById("not-found-card");
       const productCard = document.getElementById("product-card");
+      const resultSection = document.getElementById("result-section");
       const feedback = document.getElementById("save-feedback");
       feedback.classList.add("hidden");
 
       const item = inventoryDB[code];
       if (!item) {
+        lastUnknownCode = code;
         document.getElementById("not-found-text").textContent =
-          `SKU Not Found: "${code}" is not registered in the inventory database.`;
+          `Barcode "${code}" is not registered in the inventory database.`;
         notFoundCard.classList.remove("hidden");
-        if (scrollToCard) {
-          notFoundCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+        const isOwner = currentUser && currentUser.role === "Owner";
+        document.getElementById("register-scanned-btn").classList.toggle("hidden", !isOwner);
+
+        if (scrollToResult) {
+          resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
         }
         return;
       }
@@ -872,11 +952,11 @@
       document.getElementById("stock-input").value = item.stock;
       refreshInventoryUI();
 
-      if (scrollToCard) {
+      if (scrollToResult) {
         productCard.classList.add("ring-2", "ring-emerald-500");
-        setTimeout(() => productCard.classList.remove("ring-2", "ring-emerald-500"), 900);
+        setTimeout(() => productCard.classList.remove("ring-2", "ring-emerald-500"), 1100);
         if (window.innerWidth < 1024) {
-          productCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }
     }
