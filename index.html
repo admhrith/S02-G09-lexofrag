@@ -2,18 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>LexoFrag Ops PWA — Stock Audit & Scanner</title>
+
+  <!-- PWA & iOS Home Screen App Meta Tags -->
+  <meta name="theme-color" content="#059669" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="LexoFrag Ops" />
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Real App Typography: Plus Jakarta Sans (Display), Inter (UI), JetBrains Mono (SKUs) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
   <!-- Tailwind CSS v4 Play CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <!-- HTML5 QR & Barcode Scanner Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+
   <style>
+    :root {
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
     body {
       background-color: #f8fafc;
       color: #0f172a;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      letter-spacing: -0.011em;
     }
+
+    h1, h2, h3, .font-display {
+      font-family: var(--font-display);
+      letter-spacing: -0.025em;
+    }
+
+    .font-mono, code, pre {
+      font-family: var(--font-mono) !important;
+      letter-spacing: -0.02em;
+    }
+
+    /* Prevent numbers from shifting width when tapping + or - */
+    .tabular-nums, input[type="number"] {
+      font-variant-numeric: tabular-nums;
+    }
+
     #reader video {
       border-radius: 0.75rem;
       object-fit: cover;
@@ -35,20 +74,20 @@
   <!-- VIEW 1: LOGIN SCREEN                                                    -->
   <!-- ======================================================================= -->
   <div id="login-view" class="flex-1 flex items-center justify-center p-4 sm:p-6">
-    <div class="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8">
+    <div class="w-full max-w-md bg-white border border-slate-200/90 rounded-2xl shadow-sm p-6 sm:p-8">
       <!-- Brand Header -->
       <div class="flex items-center gap-3 mb-6">
-        <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-xs">
+        <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-display font-extrabold text-lg shadow-xs">
           LF
         </div>
         <div>
-          <h1 class="text-xl font-bold tracking-tight text-slate-900">LexoFrag Ops</h1>
-          <p class="text-xs text-slate-500">Digital Stock Audit & Inventory PWA</p>
+          <h1 class="text-xl font-extrabold text-slate-900 leading-tight">LexoFrag Ops</h1>
+          <p class="text-xs font-medium text-slate-500">Storeroom Inventory & Barcode Terminal</p>
         </div>
       </div>
 
-      <h2 class="text-base font-semibold text-slate-800 mb-1">Sign in to your workspace</h2>
-      <p class="text-xs text-slate-500 mb-5">Enter your authorized staff or owner credentials to start auditing stock.</p>
+      <h2 class="text-base font-bold text-slate-900 mb-1">Sign in to workspace</h2>
+      <p class="text-xs text-slate-500 mb-5 leading-relaxed">Enter your staff or owner credentials to start auditing rack stock.</p>
 
       <div id="login-error" class="hidden mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-medium text-red-700"></div>
 
@@ -84,23 +123,23 @@
 
       <!-- One-Click Demo Accounts -->
       <div class="mt-6 pt-5 border-t border-slate-200">
-        <p class="text-[11px] font-medium text-slate-500 mb-2.5">Quick Demo Login (Tap to sign in immediately):</p>
-        <div class="grid grid-cols-2 gap-2">
+        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">Quick Demo Access</p>
+        <div class="grid grid-cols-2 gap-2.5">
           <button
             type="button"
             onclick="quickLogin('saif@lexofrag.my', 'lexo123')"
-            class="p-2.5 text-left rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 transition cursor-pointer">
-            <span class="block text-xs font-semibold text-slate-800">Encik Saif</span>
-            <span class="block text-[11px] text-emerald-700 font-medium">Owner • Full Access</span>
-            <span class="block text-[10px] text-slate-400 mt-0.5">saif@lexofrag.my / lexo123</span>
+            class="p-3 text-left rounded-xl bg-slate-50 hover:bg-emerald-50/70 border border-slate-200 hover:border-emerald-300 transition cursor-pointer">
+            <span class="block text-xs font-bold text-slate-900">Encik Saif</span>
+            <span class="block text-[11px] text-emerald-700 font-semibold mt-0.5">Owner • Full Access</span>
+            <span class="block font-mono text-[10px] text-slate-400 mt-1">saif@lexofrag.my</span>
           </button>
           <button
             type="button"
             onclick="quickLogin('staff@lexofrag.my', 'staff123')"
-            class="p-2.5 text-left rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 transition cursor-pointer">
-            <span class="block text-xs font-semibold text-slate-800">Storeroom Staff</span>
-            <span class="block text-[11px] text-blue-700 font-medium">Admin • Audit Only</span>
-            <span class="block text-[10px] text-slate-400 mt-0.5">staff@lexofrag.my / staff123</span>
+            class="p-3 text-left rounded-xl bg-slate-50 hover:bg-blue-50/70 border border-slate-200 hover:border-blue-300 transition cursor-pointer">
+            <span class="block text-xs font-bold text-slate-900">Storeroom Staff</span>
+            <span class="block text-[11px] text-blue-700 font-semibold mt-0.5">Admin • Audit Only</span>
+            <span class="block font-mono text-[10px] text-slate-400 mt-1">staff@lexofrag.my</span>
           </button>
         </div>
       </div>
@@ -112,30 +151,30 @@
   <!-- ======================================================================= -->
   <div id="app-view" class="hidden flex-1 flex-col">
 
-    <!-- Sticky White Top Navbar -->
+    <!-- Sticky White Top App Bar -->
     <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3">
       <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+          <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-display font-extrabold text-sm shadow-xs">
             LF
           </div>
           <div>
-            <h1 class="text-sm sm:text-base font-bold tracking-tight text-slate-900">LexoFrag Ops</h1>
-            <p class="text-[11px] text-slate-500 hidden sm:block">Storeroom Barcode Audit & Stock Control</p>
+            <h1 class="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">LexoFrag Ops</h1>
+            <p class="text-[11px] font-medium text-slate-500 hidden sm:block">Storeroom Barcode Audit & Stock Control</p>
           </div>
         </div>
 
-        <div class="flex items-center gap-2 sm:gap-3">
+        <div class="flex items-center gap-2.5 sm:gap-3">
           <div class="text-right">
-            <p id="nav-user-name" class="text-xs font-semibold text-slate-800">Encik Saif</p>
-            <span id="nav-user-role" class="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <p id="nav-user-name" class="text-xs font-bold text-slate-900 leading-tight">Encik Saif</p>
+            <span id="nav-user-role" class="inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mt-0.5">
               Owner
             </span>
           </div>
           <button
             type="button"
             onclick="handleLogout()"
-            class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-red-600 bg-slate-100 hover:bg-red-50 border border-slate-200 hover:border-red-200 transition cursor-pointer">
+            class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-red-600 bg-slate-100 hover:bg-red-50 border border-slate-200 hover:border-red-200 transition cursor-pointer">
             Logout
           </button>
         </div>
@@ -143,34 +182,34 @@
     </header>
 
     <!-- Main Container -->
-    <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 space-y-6">
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 space-y-5">
 
       <!-- Quick KPI Summary Strip -->
       <section class="grid grid-cols-3 gap-3 sm:gap-4">
-        <div class="bg-white border border-slate-200 rounded-xl p-3.5 sm:p-4 shadow-2xs">
-          <span class="text-[11px] font-medium text-slate-500 block">Registered SKUs</span>
-          <span id="kpi-total-skus" class="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5 block">3</span>
+        <div class="bg-white border border-slate-200/90 rounded-xl p-3.5 sm:p-4 shadow-2xs">
+          <span class="text-[11px] font-semibold text-slate-500 block">Registered SKUs</span>
+          <span id="kpi-total-skus" class="font-display tabular-nums text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5 block">3</span>
         </div>
-        <div class="bg-white border border-slate-200 rounded-xl p-3.5 sm:p-4 shadow-2xs">
-          <span class="text-[11px] font-medium text-slate-500 block">Total Bottles</span>
-          <span id="kpi-total-units" class="text-xl sm:text-2xl font-bold text-emerald-600 mt-0.5 block">39</span>
+        <div class="bg-white border border-slate-200/90 rounded-xl p-3.5 sm:p-4 shadow-2xs">
+          <span class="text-[11px] font-semibold text-slate-500 block">Total Bottles</span>
+          <span id="kpi-total-units" class="font-display tabular-nums text-xl sm:text-2xl font-extrabold text-emerald-600 mt-0.5 block">39</span>
         </div>
-        <div class="bg-white border border-slate-200 rounded-xl p-3.5 sm:p-4 shadow-2xs">
-          <span class="text-[11px] font-medium text-slate-500 block">Low Stock (≤5)</span>
-          <span id="kpi-low-stock" class="text-xl sm:text-2xl font-bold text-amber-600 mt-0.5 block">1</span>
+        <div class="bg-white border border-slate-200/90 rounded-xl p-3.5 sm:p-4 shadow-2xs">
+          <span class="text-[11px] font-semibold text-slate-500 block">Low Stock (≤5)</span>
+          <span id="kpi-low-stock" class="font-display tabular-nums text-xl sm:text-2xl font-extrabold text-amber-600 mt-0.5 block">1</span>
         </div>
       </section>
 
       <!-- Responsive 2-Column Workspace -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
         <!-- LEFT COLUMN (5 cols): US01 Barcode Scanner -->
         <section class="lg:col-span-5 flex flex-col gap-5">
-          <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-2xs">
+          <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs">
             <div class="flex items-center justify-between gap-2 mb-3.5">
               <div>
-                <span class="text-[11px] font-mono font-semibold uppercase tracking-wider text-blue-600">US01 • Scanner</span>
-                <h2 class="text-base sm:text-lg font-bold text-slate-900">Scan Product Barcode</h2>
+                <span class="font-mono text-[11px] font-semibold uppercase tracking-wider text-blue-600">US01 • Scanner</span>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">Scan Product Barcode</h2>
               </div>
               <div class="flex items-center gap-1.5">
                 <!-- Native iOS/Android Camera Photo Capture Fallback -->
@@ -192,7 +231,7 @@
             <div id="file-reader" class="hidden"></div>
 
             <!-- Live Camera Viewfinder -->
-            <div class="relative rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 overflow-hidden min-h-[230px] flex flex-col items-center justify-center">
+            <div class="relative rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 overflow-hidden min-h-[240px] flex flex-col items-center justify-center">
               <div id="reader" class="w-full"></div>
               <div id="camera-placeholder" class="p-6 text-center">
                 <div class="w-12 h-12 rounded-full bg-white border border-slate-200 shadow-2xs flex items-center justify-center mx-auto mb-2.5 text-slate-500">
@@ -201,12 +240,18 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 14.625h2.25m2.25 0h1.5m-6 3h1.5m2.25 0h2.25m-6 2.25h6" />
                   </svg>
                 </div>
-                <p class="text-xs sm:text-sm text-slate-600">Tap <strong class="text-slate-900">Start Camera</strong> for live scan, or <strong class="text-slate-900">Snap Photo</strong> to use your iPhone camera app.</p>
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Tap <strong class="font-semibold text-slate-900">Start Camera</strong> and hold a <strong class="font-semibold text-slate-900">Code-128</strong> or <strong class="font-semibold text-slate-900">QR</strong> barcode 15–20 cm from the lens.</p>
               </div>
             </div>
 
+            <!-- Live Scan Success Toast -->
+            <div id="scan-success-toast" class="hidden mt-3 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 flex items-center justify-between">
+              <span id="scan-success-text" class="font-mono">Detected: LF-10ML-VAN</span>
+              <span class="text-[10px] uppercase tracking-wider bg-emerald-600 text-white px-2 py-0.5 rounded-md">Matched</span>
+            </div>
+
             <!-- Camera Error / Info Alert -->
-            <div id="camera-alert" class="hidden mt-3 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700"></div>
+            <div id="camera-alert" class="hidden mt-3 p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 leading-relaxed"></div>
 
             <!-- Manual Barcode Lookup Fallback -->
             <form onsubmit="handleManualLookup(event)" class="mt-4 pt-4 border-t border-slate-200">
@@ -216,7 +261,7 @@
                   id="manual-sku"
                   type="text"
                   placeholder="e.g. LF-10ML-VAN"
-                  class="flex-1 bg-white border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 focus:outline-none rounded-xl px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400"
+                  class="flex-1 font-mono bg-white border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 focus:outline-none rounded-xl px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 uppercase"
                 />
                 <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-sm font-semibold text-white transition cursor-pointer">
                   Lookup
@@ -226,12 +271,12 @@
 
             <!-- QA Simulate Chips -->
             <div class="mt-4 pt-3.5 border-t border-slate-200">
-              <p class="text-[11px] font-medium text-slate-500 mb-2">QA Quick Simulate Scan:</p>
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">QA Quick Simulate Scan</p>
               <div class="flex flex-wrap gap-1.5">
-                <button type="button" onclick="lookupBarcode('LF-10ML-VAN')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-VAN</button>
-                <button type="button" onclick="lookupBarcode('LF-10ML-COF')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-COF</button>
-                <button type="button" onclick="lookupBarcode('LF-10ML-LAV')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-LAV</button>
-                <button type="button" onclick="lookupBarcode('INVALID-999')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 cursor-pointer">Unknown SKU</button>
+                <button type="button" onclick="lookupBarcode('LF-10ML-VAN', true)" class="font-mono px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-VAN</button>
+                <button type="button" onclick="lookupBarcode('LF-10ML-COF', true)" class="font-mono px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-COF</button>
+                <button type="button" onclick="lookupBarcode('LF-10ML-LAV', true)" class="font-mono px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 cursor-pointer">LF-10ML-LAV</button>
+                <button type="button" onclick="lookupBarcode('INVALID-999', true)" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 cursor-pointer">Unknown SKU</button>
               </div>
             </div>
           </div>
@@ -252,22 +297,22 @@
           </div>
 
           <!-- US02 Active Stock Update Card -->
-          <div id="product-card" class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-2xs">
+          <div id="product-card" class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs transition">
             <div class="flex items-start justify-between gap-3 pb-4 border-b border-slate-200">
               <div>
                 <span id="sku-badge" class="inline-block px-2.5 py-0.5 rounded-md text-xs font-mono font-semibold bg-blue-50 text-blue-700 border border-blue-200 mb-1.5">
                   LF-10ML-VAN
                 </span>
-                <h2 id="product-name" class="text-lg sm:text-xl font-bold text-slate-900">
+                <h2 id="product-name" class="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
                   Vanilla Mist (10ml Liquid)
                 </h2>
-                <p id="product-meta" class="text-xs text-slate-500 mt-0.5">
+                <p id="product-meta" class="text-xs font-medium text-slate-500 mt-1">
                   Heat-Resistant Liquid Formula • Rack A1
                 </p>
               </div>
-              <div class="text-right bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2">
-                <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 block">On Hand</span>
-                <span id="current-stock-display" class="text-2xl sm:text-3xl font-bold text-emerald-600">24</span>
+              <div class="text-right bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 shrink-0">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">On Hand</span>
+                <span id="current-stock-display" class="font-display tabular-nums text-2xl sm:text-3xl font-extrabold text-emerald-600">24</span>
               </div>
             </div>
 
@@ -291,7 +336,7 @@
                   min="0"
                   value="24"
                   oninput="handleDirectInput()"
-                  class="flex-1 h-14 text-center text-2xl font-bold bg-white border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 focus:outline-none rounded-xl text-slate-900"
+                  class="flex-1 h-14 text-center font-display tabular-nums text-2xl font-extrabold bg-white border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 focus:outline-none rounded-xl text-slate-900"
                 />
 
                 <button
@@ -306,10 +351,10 @@
               <!-- Quick Delta Presets -->
               <div class="grid grid-cols-3 gap-2 mt-3">
                 <button type="button" onclick="stepQuantity(-1)" class="py-2 px-2 rounded-xl text-xs font-semibold bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 transition cursor-pointer">
-                  -1 TikTok Sale
+                  −1 TikTok Sale
                 </button>
                 <button type="button" onclick="stepQuantity(-5)" class="py-2 px-2 rounded-xl text-xs font-semibold bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 transition cursor-pointer">
-                  -5 Bundle Sale
+                  −5 Bundle Sale
                 </button>
                 <button type="button" onclick="stepQuantity(10)" class="py-2 px-2 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 transition cursor-pointer">
                   +10 Restock
@@ -329,7 +374,7 @@
           </div>
 
           <!-- Rack Inventory Overview + Owner Add SKU Button -->
-          <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-2xs">
+          <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs">
             <div class="flex items-center justify-between gap-2 mb-3">
               <div>
                 <h3 class="text-sm font-bold text-slate-900">Rack Inventory List</h3>
@@ -347,7 +392,7 @@
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse">
                 <thead>
-                  <tr class="border-b border-slate-200 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                  <tr class="border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     <th class="py-2 pr-2">SKU</th>
                     <th class="py-2 px-2">Fragrance</th>
                     <th class="py-2 px-2">Rack</th>
@@ -360,14 +405,14 @@
           </div>
 
           <!-- Session Audit Trail -->
-          <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-2xs">
+          <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs">
             <div class="flex items-center justify-between mb-3">
               <h3 class="text-sm font-bold text-slate-900">Audit Activity Log</h3>
               <button
                 id="reset-db-btn"
                 type="button"
                 onclick="resetDemoData()"
-                class="text-[11px] font-medium text-slate-500 hover:text-slate-900 underline cursor-pointer">
+                class="text-[11px] font-semibold text-slate-500 hover:text-slate-900 underline cursor-pointer">
                 Reset Demo DB
               </button>
             </div>
@@ -394,7 +439,7 @@
       <form onsubmit="handleAddNewSku(event)" class="space-y-3.5">
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Barcode / SKU Code</label>
-          <input id="new-sku-code" type="text" required placeholder="e.g. LF-10ML-STR" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm uppercase focus:outline-none focus:border-blue-600" />
+          <input id="new-sku-code" type="text" required placeholder="e.g. LF-10ML-STR" class="w-full font-mono px-3 py-2 rounded-xl border border-slate-300 text-sm uppercase focus:outline-none focus:border-blue-600" />
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-700 mb-1">Product Name</label>
@@ -407,7 +452,7 @@
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Initial Stock</label>
-            <input id="new-sku-stock" type="number" min="0" required value="10" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600" />
+            <input id="new-sku-stock" type="number" min="0" required value="10" class="w-full tabular-nums px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-blue-600" />
           </div>
         </div>
 
@@ -465,7 +510,7 @@
         text.textContent = "You are inside WhatsApp's browser. Tap the Safari compass icon (bottom right) to enable camera scanning.";
         banner.classList.remove("hidden");
       } else if (!isSecure) {
-        text.textContent = "iPhone Safari blocks live camera on non-HTTPS links. Deploy to Netlify/GitHub Pages for HTTPS, or use 'Snap Photo'.";
+        text.textContent = "iPhone Safari blocks live camera on non-HTTPS links. Open via GitHub Pages HTTPS, or use 'Snap Photo'.";
         banner.classList.remove("hidden");
       }
     })();
@@ -485,7 +530,7 @@
       const account = DEMO_USERS[email.trim().toLowerCase()];
 
       if (!account || account.pass !== pass) {
-        errBox.textContent = "Invalid email or password. Use saif@lexofrag.my / lexo123 or click a Quick Demo Login card below.";
+        errBox.textContent = "Invalid email or password. Use saif@lexofrag.my / lexo123 or click a Quick Demo Access card below.";
         errBox.classList.remove("hidden");
         return;
       }
@@ -509,11 +554,28 @@
       loginWithCredentials(email, pass);
     }
 
-    async function handleLogout() {
-      if (isScanning && html5QrCode) {
-        try { await html5QrCode.stop(); } catch (e) {}
-        isScanning = false;
+    async function stopCameraSafely() {
+      if (html5QrCode) {
+        try {
+          if (isScanning) {
+            await html5QrCode.stop();
+          }
+          html5QrCode.clear();
+        } catch (e) {}
       }
+      isScanning = false;
+      const btn = document.getElementById("toggle-camera-btn");
+      if (btn) {
+        btn.textContent = "Start Camera";
+        btn.classList.remove("bg-red-600", "hover:bg-red-700");
+        btn.classList.add("bg-emerald-600", "hover:bg-emerald-700");
+      }
+      const placeholder = document.getElementById("camera-placeholder");
+      if (placeholder) placeholder.classList.remove("hidden");
+    }
+
+    async function handleLogout() {
+      await stopCameraSafely();
       currentUser = null;
       safeRemove("sessionStorage", "lexofrag_user");
       renderAuthState();
@@ -545,7 +607,7 @@
       document.getElementById("reset-db-btn").classList.toggle("hidden", !isOwner);
 
       refreshInventoryUI();
-      lookupBarcode(activeSku || "LF-10ML-VAN");
+      lookupBarcode(activeSku || "LF-10ML-VAN", false);
     }
 
     // =========================================================================
@@ -561,6 +623,8 @@
     let activeSku = "LF-10ML-VAN";
     let html5QrCode = null;
     let isScanning = false;
+    let lastScannedCode = "";
+    let lastScanTimestamp = 0;
 
     function persistDB() {
       safeSet("localStorage", "lexofrag_db", JSON.stringify(inventoryDB));
@@ -584,12 +648,12 @@
           ? "bg-amber-50 text-amber-700 border-amber-200"
           : "bg-emerald-50 text-emerald-700 border-emerald-200";
         return `
-          <tr onclick="lookupBarcode('${item.sku}')" class="cursor-pointer transition ${isSelected ? 'bg-blue-50/70' : 'hover:bg-slate-50'}">
+          <tr onclick="lookupBarcode('${item.sku}', true)" class="cursor-pointer transition ${isSelected ? 'bg-blue-50/70' : 'hover:bg-slate-50'}">
             <td class="py-2.5 pr-2 font-mono font-semibold text-blue-700">${item.sku}</td>
             <td class="py-2.5 px-2 font-medium text-slate-800">${item.name}</td>
             <td class="py-2.5 px-2 text-slate-500">${item.rack}</td>
             <td class="py-2.5 pl-2 text-right">
-              <span class="inline-block px-2 py-0.5 rounded-md font-bold border ${stockBadge}">${item.stock}</span>
+              <span class="inline-block tabular-nums px-2 py-0.5 rounded-md font-bold border ${stockBadge}">${item.stock}</span>
             </td>
           </tr>
         `;
@@ -599,7 +663,7 @@
     function resetDemoData() {
       inventoryDB = structuredClone(DEFAULT_INVENTORY);
       persistDB();
-      lookupBarcode("LF-10ML-VAN");
+      lookupBarcode("LF-10ML-VAN", false);
       document.getElementById("audit-log").innerHTML =
         '<li class="py-2 text-center text-slate-400">Demo database reset to initial quantities.</li>';
     }
@@ -629,51 +693,108 @@
       persistDB();
       toggleAddSkuModal(false);
       event.target.reset();
-      lookupBarcode(code);
+      lookupBarcode(code, true);
       showFeedback(`Added new SKU: ${code} (${stock} units).`, false);
     }
 
     // =========================================================================
-    // US01: LIVE CAMERA & PHOTO BARCODE SCANNER (iOS Safari Optimized)
+    // US01: IMPROVED 1D & QR BARCODE SCANNER (Wider Box + Hardware Detection)
     // =========================================================================
+    function createScannerInstance(elementId) {
+      const supportedFormats = typeof Html5QrcodeSupportedFormats !== "undefined" ? [
+        Html5QrcodeSupportedFormats.QR_CODE,
+        Html5QrcodeSupportedFormats.CODE_128,
+        Html5QrcodeSupportedFormats.CODE_39,
+        Html5QrcodeSupportedFormats.EAN_13,
+        Html5QrcodeSupportedFormats.EAN_8,
+        Html5QrcodeSupportedFormats.UPC_A
+      ] : undefined;
+
+      return new Html5Qrcode(elementId, {
+        verbose: false,
+        experimentalFeatures: { useBarCodeDetectorIfSupported: true },
+        formatsToSupport: supportedFormats
+      });
+    }
+
+    function triggerScanFeedback(code) {
+      if (navigator.vibrate) {
+        try { navigator.vibrate(90); } catch (e) {}
+      }
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.09);
+      } catch (e) {}
+
+      const toast = document.getElementById("scan-success-toast");
+      document.getElementById("scan-success-text").textContent = `Scanned: ${code}`;
+      toast.classList.remove("hidden");
+    }
+
     async function toggleCamera() {
       const btn = document.getElementById("toggle-camera-btn");
       const placeholder = document.getElementById("camera-placeholder");
       const alertBox = document.getElementById("camera-alert");
+      const toast = document.getElementById("scan-success-toast");
       alertBox.classList.add("hidden");
+      toast.classList.add("hidden");
 
       if (isScanning && html5QrCode) {
-        try { await html5QrCode.stop(); } catch (e) {}
-        isScanning = false;
-        btn.textContent = "Start Camera";
-        btn.classList.remove("bg-red-600", "hover:bg-red-700");
-        btn.classList.add("bg-emerald-600", "hover:bg-emerald-700");
-        placeholder.classList.remove("hidden");
+        await stopCameraSafely();
         return;
       }
 
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alertBox.textContent = "Live camera requires HTTPS in Safari. Open this page via an https:// link, or tap 'Snap Photo' above to scan with your iPhone camera.";
+        alertBox.textContent = "Live camera requires HTTPS in Safari. Open via your GitHub Pages https:// link, or tap 'Snap Photo' above.";
         alertBox.classList.remove("hidden");
         return;
       }
 
       try {
         placeholder.classList.add("hidden");
-        html5QrCode = new Html5Qrcode("reader");
-        const config = { fps: 10, qrbox: { width: 220, height: 140 }, aspectRatio: 1.333 };
+        html5QrCode = createScannerInstance("reader");
+
+        const config = {
+          fps: 15,
+          qrbox: (viewfinderWidth, viewfinderHeight) => ({
+            width: Math.max(220, Math.floor(viewfinderWidth * 0.85)),
+            height: Math.max(110, Math.floor(viewfinderHeight * 0.45))
+          }),
+          videoConstraints: {
+            facingMode: "environment",
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        };
+
         const onScanSuccess = (decodedText) => {
-          lookupBarcode(decodedText.trim().toUpperCase());
+          const cleanCode = decodedText.trim().toUpperCase();
+          const now = Date.now();
+          if (cleanCode === lastScannedCode && (now - lastScanTimestamp) < 1500) {
+            return;
+          }
+          lastScannedCode = cleanCode;
+          lastScanTimestamp = now;
+
+          triggerScanFeedback(cleanCode);
+          lookupBarcode(cleanCode, true);
         };
 
         try {
           await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, () => {});
         } catch (primaryErr) {
-          // Fallback for iOS devices that reject facingMode object constraints
           const cameras = await Html5Qrcode.getCameras();
           if (cameras && cameras.length > 0) {
             const backCam = cameras[cameras.length - 1].id;
-            await html5QrCode.start(backCam, config, onScanSuccess, () => {});
+            await html5QrCode.start(backCam, { fps: config.fps, qrbox: config.qrbox }, onScanSuccess, () => {});
           } else {
             throw primaryErr;
           }
@@ -684,8 +805,8 @@
         btn.classList.remove("bg-emerald-600", "hover:bg-emerald-700");
         btn.classList.add("bg-red-600", "hover:bg-red-700");
       } catch (err) {
-        placeholder.classList.remove("hidden");
-        alertBox.textContent = "Could not open live camera (check iPhone Safari Settings > Camera > Allow, or ensure you are on an https:// link). You can also tap 'Snap Photo' above.";
+        await stopCameraSafely();
+        alertBox.textContent = "Could not open live camera (check Safari Settings > Camera > Allow, and verify you are on an https:// link). You can also tap 'Snap Photo' above.";
         alertBox.classList.remove("hidden");
       }
     }
@@ -698,11 +819,13 @@
       alertBox.classList.add("hidden");
 
       try {
-        const fileScanner = new Html5Qrcode("file-reader");
+        const fileScanner = createScannerInstance("file-reader");
         const decodedText = await fileScanner.scanFile(file, false);
-        lookupBarcode(decodedText.trim().toUpperCase());
+        const cleanCode = decodedText.trim().toUpperCase();
+        triggerScanFeedback(cleanCode);
+        lookupBarcode(cleanCode, true);
       } catch (err) {
-        alertBox.textContent = "No readable barcode or QR code found in that photo. Try moving closer with better lighting, or enter the SKU manually.";
+        alertBox.textContent = "No readable Code-128 barcode or QR code found in that photo. Hold 15–20 cm away in good lighting, or use Manual SKU Entry.";
         alertBox.classList.remove("hidden");
       } finally {
         event.target.value = "";
@@ -714,7 +837,7 @@
       const input = document.getElementById("manual-sku");
       const code = input.value.trim().toUpperCase();
       if (code) {
-        lookupBarcode(code);
+        lookupBarcode(code, true);
         input.value = "";
       }
     }
@@ -722,8 +845,9 @@
     // =========================================================================
     // US01 & US02: SKU LOOKUP & STOCK STEPPER LOGIC
     // =========================================================================
-    function lookupBarcode(code) {
+    function lookupBarcode(code, scrollToCard = false) {
       const notFoundCard = document.getElementById("not-found-card");
+      const productCard = document.getElementById("product-card");
       const feedback = document.getElementById("save-feedback");
       feedback.classList.add("hidden");
 
@@ -732,6 +856,9 @@
         document.getElementById("not-found-text").textContent =
           `SKU Not Found: "${code}" is not registered in the inventory database.`;
         notFoundCard.classList.remove("hidden");
+        if (scrollToCard) {
+          notFoundCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
         return;
       }
 
@@ -744,6 +871,14 @@
       document.getElementById("current-stock-display").textContent = item.stock;
       document.getElementById("stock-input").value = item.stock;
       refreshInventoryUI();
+
+      if (scrollToCard) {
+        productCard.classList.add("ring-2", "ring-emerald-500");
+        setTimeout(() => productCard.classList.remove("ring-2", "ring-emerald-500"), 900);
+        if (window.innerWidth < 1024) {
+          productCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
     }
 
     function stepQuantity(delta) {
@@ -817,10 +952,10 @@
       li.innerHTML = `
         <div>
           <span class="font-mono text-slate-900 font-semibold">${sku}</span>
-          <span class="text-slate-600 ml-1">(${oldVal} → ${newVal})</span>
+          <span class="tabular-nums text-slate-600 ml-1">(${oldVal} → ${newVal})</span>
           <span class="block text-[11px] text-slate-400">Updated by ${actor} at ${time}</span>
         </div>
-        <span class="px-2 py-0.5 rounded-md font-mono font-bold border ${badgeColor}">${sign}</span>
+        <span class="px-2 py-0.5 rounded-md font-mono tabular-nums font-bold border ${badgeColor}">${sign}</span>
       `;
       log.prepend(li);
     }
