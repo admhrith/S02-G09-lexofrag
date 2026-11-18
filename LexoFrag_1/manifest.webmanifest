@@ -1,0 +1,12 @@
+{
+  "name": "LexoFrag Ops",
+  "short_name": "LexoFrag",
+  "description": "Digital stock audit & inventory scanner",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
