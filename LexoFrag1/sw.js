@@ -1,7 +1,7 @@
 // Minimal service worker: makes the app installable and keeps the shell available offline.
 // api.php is never cached, so stock data is always live.
-const CACHE = "lexofrag-shell-v1";
-const SHELL = ["./", "./index.html", "./byredo-theme.css", "./manifest.webmanifest", "./icon.svg"];
+const CACHE = "lexofrag-shell-v2";
+const SHELL = ["./", "./index.html", "./byredo-theme.css", "./manifest.webmanifest", "./images/logo.png", "./images/icon-192.png", "./images/icon-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(k => Promise.all(k.filter(n => n !== CACHE).map(n => caches.delete(n)))));

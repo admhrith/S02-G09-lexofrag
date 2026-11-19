@@ -618,3 +618,218 @@ table { min-width: 100%; }
 @media (max-height: 480px) and (orientation: landscape) {
   #reader { max-height: 60vh; }
 }
+
+/* --------------------------------------------------------------------------
+   16. LEXOFRAG BRAND BLUE  (from the logo; layered ON TOP of the black/white
+   palette above, nothing there is removed)
+   -------------------------------------------------------------------------- */
+:root {
+  --brand: #0001cf;
+  --brand-dark: #00008f;
+  --brand-tint: #eef0ff;
+}
+
+::selection { background: var(--brand); color: var(--paper); }
+:focus-visible { outline-color: var(--brand); }
+input:focus, select:focus { border-color: var(--brand); box-shadow: 0 1px 0 0 var(--brand); }
+
+/* Logo + signature rule across the top of the header and login card */
+img[src="logo.png"] { object-fit: cover; flex-shrink: 0; }
+header.sticky { border-top: 3px solid var(--brand); }
+#login-view > div { border-top: 3px solid var(--brand); }
+
+/* Accents: SKU codes, key numbers, selected row, links */
+.text-blue-700 { color: var(--brand); }
+#kpi-total-units, #stat-sales { color: var(--brand); }
+#inventory-table-body > tr[class*="bg-blue-50"] td:first-child { box-shadow: inset 2px 0 0 var(--brand); }
+.order-link { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
+
+/* Section tabs */
+.tab-btn {
+  padding: 0.75rem 0;
+  margin-bottom: -1px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--stone);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.tab-btn:hover { color: var(--ink); }
+.tab-btn[aria-selected="true"] { color: var(--brand); border-bottom-color: var(--brand); }
+.tab-badge {
+  display: inline-block; min-width: 1.15rem; padding: 0 0.3rem; margin-left: 0.25rem;
+  font-size: 0.625rem; line-height: 1.15rem; text-align: center; letter-spacing: 0;
+  background: var(--brand); color: var(--paper); border-radius: 9999px;
+}
+.tab-badge.hidden { display: none; }
+
+/* Buttons used by the Orders tab (same typography as the existing buttons) */
+.btn {
+  padding: 0.6rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid var(--ink);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.btn-sm { padding: 0.4rem 0.75rem; letter-spacing: 0.08em; }
+.btn-ghost { background: transparent; color: var(--ink); }
+.btn-ghost:hover { background: var(--ink); color: var(--paper); }
+.btn-ghost[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--paper); }
+.btn-primary { background: var(--brand); border-color: var(--brand); color: var(--paper); }
+.btn-primary:hover { background: var(--paper); color: var(--brand); }
+.btn-danger { background: transparent; border-color: var(--alert); color: var(--alert); }
+.btn-danger:hover { background: var(--alert); color: var(--paper); }
+
+/* Order status badges */
+.order-status { letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.625rem; }
+.order-status[data-status="New"] { background: var(--brand); border-color: var(--brand); color: var(--paper); }
+.order-status[data-status="Packed"], .order-status[data-status="Shipped"] { background: var(--brand-tint); border-color: var(--brand); color: var(--brand); }
+.order-status[data-status="Delivered"] { background: transparent; border-color: var(--ok); color: var(--ok); }
+.order-status[data-status="Cancelled"] { background: transparent; border-color: var(--alert); color: var(--alert); }
+
+/* Dropdowns match the underline inputs */
+select {
+  background-color: transparent;
+  color: var(--ink);
+  border-style: solid;
+  border-width: 0 0 1px;
+  border-color: var(--rule);
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 1.25rem;
+  text-overflow: ellipsis;
+}
+@media (pointer: coarse) { select { font-size: 16px; min-height: 44px; } }
+@media (max-width: 480px) { #orders-list .btn-sm, #order-filters .btn-sm { padding: 0.45rem 0.6rem; } }
+/* --------------------------------------------------------------------------
+   17. BYREDO FULL-BLEED HERO & COMMERCIAL STOREFRONT
+   -------------------------------------------------------------------------- */
+   .store-nav-link {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--stone);
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    cursor: pointer;
+  }
+  .store-nav-link:hover,
+  .store-nav-link[aria-current="page"] {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+  }
+  
+  /* Transparent overlay header on Homepage hero */
+  #store-header.is-hero {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+    border-bottom-color: transparent;
+    border-top-color: transparent;
+    color: var(--paper);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  #store-header.is-hero .hero-bar-btn {
+    color: var(--paper);
+  }
+  #store-header.is-hero .hero-bar-btn:hover {
+    opacity: 0.72;
+  }
+  
+  /* Solid white sticky header when scrolled or on Shop / About pages */
+  #store-header.is-solid {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.96);
+    border-bottom: 1px solid var(--line);
+    border-top: 3px solid var(--brand);
+    color: var(--ink);
+  }
+  #store-header.is-solid .hero-bar-btn {
+    color: var(--ink);
+  }
+  
+  /* Oversized Byredo-style centered hero wordmark */
+  .hero-wordmark {
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 8.5vw, 6.75rem);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 0.95;
+    color: var(--paper);
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.18);
+    user-select: none;
+  }
+  
+  /* Floating bottom-right Byredo quick-shop card */
+  .hero-floating-card {
+    position: absolute;
+    right: clamp(0.875rem, 3vw, 2.25rem);
+    bottom: clamp(0.875rem, 3vw, 2.25rem);
+    width: min(340px, calc(100vw - 1.75rem));
+    background: var(--paper);
+    border: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    z-index: 15;
+  }
+  @media (min-width: 768px) {
+    .hero-floating-card {
+      grid-template-columns: 96px 1fr;
+    }
+    #store-page-home section:first-child img {
+      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    }
+  }
+  
+  .product-tile {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.25s ease;
+  }
+  .product-tile:hover {
+    border-color: var(--ink);
+  }
+  
+  .product-media {
+    aspect-ratio: 4 / 5;
+    background: var(--mist);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    position: relative;
+  }
+  .product-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .product-tile:hover .product-media img {
+    transform: scale(1.03);
+  }
+  .product-media-blank {
+    width: 100%;
+    height: 100%;
+    background: var(--mist);
+  }
+  
+  .drawer-backdrop {
+    background: rgba(0, 0, 0, 0.38);
+  }
