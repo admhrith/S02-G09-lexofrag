@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0001cf" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="LexoFrag" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="images/logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="images/icon-192.png" />
+  <title>About LexoFrag — LEXOFRAG.</title>
+  <!-- Tailwind CSS v4 Play CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    #reader video {
+      border-radius: 0.75rem;
+      object-fit: cover;
+      width: 100% !important;
+    }
+  </style>
+  <!-- Byredo-inspired theme (unlayered, overrides Tailwind utilities) -->
+  <link rel="stylesheet" href="byredo-theme.css" />
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900" data-page="about">
+
+  <!-- Page: about. Header, footer, menu, product modal and bag drawer are injected by js/layout.js -->
+  <div id="storefront-shell" class="flex-1 flex flex-col bg-white">
+
+    <div id="store-page-about" class="flex-1">
+      <section class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 border-b border-slate-200">
+        <div class="lg:col-span-5 bg-[#f5f5f2] border-b lg:border-b-0 lg:border-r border-slate-200 min-h-[340px]">
+          <img src="images/Vanilla_Ice.jpeg" alt="LexoFrag Vanilla Ice Bottle" class="w-full h-full object-cover" />
+        </div>
+        <div class="lg:col-span-7 p-6 sm:p-12 lg:p-16 flex flex-col justify-center">
+          <span class="block text-[10px] uppercase tracking-[0.22em] text-slate-500 mb-3">About LexoFrag</span>
+          <h2 class="text-2xl sm:text-4xl font-light text-slate-900 leading-tight mb-6">
+            Designed in Malaysia for Drivers Who Treat Their Cabin as Personal Space.
+          </h2>
+          <div class="space-y-4 text-sm text-slate-600 leading-relaxed max-w-2xl">
+            <p>
+              LexoFrag began with a straightforward observation: parked vehicles in Malaysia routinely exceed 45°C inside the cabin, causing standard alcohol-heavy air fresheners to flash off within a week or turn harsh.
+            </p>
+            <p>
+              Every LexoFrag vessel uses a heat-stabilized liquid fragrance base paired with natural porous wood diffusion. Whether suspended as a 10ml Classic/Deluxe diffuser or seated on the console as a 50ml Signature frosted glass bottle, each scent is calibrated to project cleanly without overwhelming the senses.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 mt-10 pt-8 border-t border-slate-200">
+            <div>
+              <span class="block text-2xl font-light text-slate-900">14</span>
+              <span class="text-[11px] uppercase tracking-[0.14em] text-slate-500">Curated Scents</span>
+            </div>
+            <div>
+              <span class="block text-2xl font-light text-slate-900">3</span>
+              <span class="text-[11px] uppercase tracking-[0.14em] text-slate-500">Vessel Editions</span>
+            </div>
+            <div>
+              <span class="block text-2xl font-light text-blue-700">MY</span>
+              <span class="text-[11px] uppercase tracking-[0.14em] text-slate-500">Heat-Tested</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-7xl mx-auto px-4 sm:px-8 py-12 sm:py-16">
+        <h3 class="mb-6">The Three Editions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="border border-slate-200 p-6">
+            <span class="text-[10px] uppercase tracking-[0.16em] text-slate-500">01 • 10ml Hanging</span>
+            <h4 class="text-lg font-medium text-slate-900 mt-1 mb-2">Classic Edition</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">Accessible everyday scents—Mix Fruit, Vanilla Ice, and Sweet Gummy—crafted for crisp cabin freshness.</p>
+          </div>
+          <div class="border border-slate-200 p-6">
+            <span class="text-[10px] uppercase tracking-[0.16em] text-slate-500">02 • 50ml Frosted Vessel</span>
+            <h4 class="text-lg font-medium text-slate-900 mt-1 mb-2">Signature Collection</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">Our iconic cobalt frosted glass bottle with spherical beechwood diffuser cap across five signature profiles.</p>
+          </div>
+          <div class="border border-slate-200 p-6">
+            <span class="text-[10px] uppercase tracking-[0.16em] text-slate-500">03 • 10ml &amp; 50ml Reserve</span>
+            <h4 class="text-lg font-medium text-slate-900 mt-1 mb-2">Deluxe Edition</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">Elevated botanical compositions—Dark Apple, Snowy Sakura, and Frosty Dew—in both hanging and standing formats.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/store.js"></script>
+</body>
+</html>

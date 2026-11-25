@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0001cf" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="LexoFrag" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="images/logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="images/icon-192.png" />
+  <title>LEXOFRAG. — Automotive Fragrance &amp; Cabin Objects</title>
+  <!-- Tailwind CSS v4 Play CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    #reader video {
+      border-radius: 0.75rem;
+      object-fit: cover;
+      width: 100% !important;
+    }
+  </style>
+  <!-- Byredo-inspired theme (unlayered, overrides Tailwind utilities) -->
+  <link rel="stylesheet" href="byredo-theme.css" />
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900" data-page="home">
+
+  <!-- Page: home. Header, footer, menu, product modal and bag drawer are injected by js/layout.js -->
+  <div id="storefront-shell" class="flex-1 flex flex-col bg-white">
+
+    <div id="store-page-home" class="flex-1">
+
+      <!-- 1. Full-Viewport Byredo Campaign Hero (with Ambient Blurred Side Fill) -->
+      <section class="relative w-full h-svh min-h-[560px] bg-[#141312] overflow-hidden flex items-center justify-center">
+        <!-- Ambient Blurred Background Layer (fills ultrawide/desktop sides organically) -->
+        <img
+          src="images/Mainpage.jpg"
+          alt=""
+          aria-hidden="true"
+          class="hero-ambient-bg"
+        />
+
+        <!-- Sharp Foreground Campaign Image (never cropped) -->
+        <img
+          src="images/Mainpage.jpg"
+          alt="LexoFrag Signature 50ml Campaign"
+          class="relative z-10 w-full h-full object-contain object-center"
+        />
+
+        <!-- Subtle Top Vignette so white MENU / LEXOFRAG / CART stay crisp -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/25 pointer-events-none z-10"></div>
+
+        <!-- Oversized Centered Wordmark -->
+        <div class="absolute top-12 sm:top-14 left-0 right-0 text-center px-4 pointer-events-none z-20">
+          <h1 class="hero-wordmark">LEXOFRAG</h1>
+        </div>
+
+        <!-- Floating Bottom-Right Signature Collection Card -->
+        <a href="shop.html?filter=Signature" class="hero-floating-card z-20 group cursor-pointer no-underline">
+          <div class="bg-[#f5f5f2] border-r border-slate-200 overflow-hidden">
+            <img
+              src="images/Mainpage.jpg"
+              alt="LexoFrag Signature 50ml Collection"
+              class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+          <div class="p-3.5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-2">
+                <span class="block text-[9px] uppercase tracking-[0.18em] text-slate-500">50ml Lineup</span>
+                <span class="text-slate-900 group-hover:text-blue-700 group-hover:translate-x-0.5 transition-transform" aria-hidden="true">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </span>
+              </div>
+              <span class="block text-xs font-medium uppercase tracking-[0.06em] text-slate-900 mt-1 group-hover:underline">
+                Signature Collection
+              </span>
+              <span class="block text-[11px] font-medium text-blue-700 mt-1">5 Scents • RM 15.34</span>
+            </div>
+            <span class="block text-[9px] uppercase tracking-[0.16em] text-slate-500 mt-2">Explore Edition</span>
+          </div>
+        </a>
+      </section>
+
+      <!-- 2. Interactive Scent Spotlight Carousel (Swipe, Drag & Prev/Next Controls) -->
+      <section
+        id="hero-carousel"
+        aria-roledescription="carousel"
+        aria-label="Signature Scent Showcase"
+        class="relative w-full bg-[#111111] py-12 sm:py-16 overflow-hidden select-none border-b border-slate-200">
+
+        <!-- Section Header -->
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 mb-6 flex items-end justify-between gap-4">
+          <div>
+            <span class="block text-[10px] uppercase tracking-[0.22em] text-white/60 mb-1">Interactive Editorial</span>
+            <h2 class="text-xl sm:text-2xl font-light text-white tracking-tight">Inside the Signature Collection</h2>
+          </div>
+
+          <!-- Desktop / Tablet Previous & Next Buttons -->
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              id="hero-prev-btn"
+              class="carousel-nav-btn"
+              aria-label="Previous scent slide"
+              title="Previous">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              id="hero-next-btn"
+              class="carousel-nav-btn"
+              aria-label="Next scent slide"
+              title="Next">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Horizontal Peek & Swipe Track -->
+        <div id="hero-track" class="hero-track">
+
+          <!-- Slide 1: Breezy Sea -->
+          <article class="hero-slide is-active" data-slide="0">
+            <div class="hero-slide-frame bg-[#1b1b19]">
+              <img src="images/Breezy_Sea.jpeg" alt="Breezy Sea 50ml" draggable="false" class="w-full h-full object-cover object-center" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none"></div>
+              <div class="hero-caption">
+                <button type="button" onclick="addToBag('LF-50S-SEA', 1)" class="hero-cta-btn">Add • RM 15.34</button>
+                <p class="hero-caption-text">
+                  <strong>Breezy Sea</strong> • Crisp marine air, coastal salt mist, and clean mineral wood.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 2: Warm Floral -->
+          <article class="hero-slide" data-slide="1">
+            <div class="hero-slide-frame bg-[#1b1b19]">
+              <img src="images/Warm_Floral.jpeg" alt="Warm Floral 50ml" draggable="false" class="w-full h-full object-cover object-center" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none"></div>
+              <div class="hero-caption">
+                <button type="button" onclick="addToBag('LF-50S-FLO', 1)" class="hero-cta-btn">Add • RM 15.34</button>
+                <p class="hero-caption-text">
+                  <strong>Warm Floral</strong> • Velvety white petals, soft amber warmth, and subtle musk.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 3: Vanilla Ice -->
+          <article class="hero-slide" data-slide="2">
+            <div class="hero-slide-frame bg-[#1b1b19]">
+              <img src="images/Vanilla_Ice.jpeg" alt="Vanilla Ice 50ml" draggable="false" class="w-full h-full object-cover object-center" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none"></div>
+              <div class="hero-caption">
+                <button type="button" onclick="addToBag('LF-50S-VAN', 1)" class="hero-cta-btn">Add • RM 15.34</button>
+                <p class="hero-caption-text">
+                  <strong>Vanilla Ice</strong> • Creamy Madagascar vanilla bean tempered for warm cabins.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 4: Mix Fruit -->
+          <article class="hero-slide" data-slide="3">
+            <div class="hero-slide-frame bg-[#1b1b19]">
+              <img src="images/Mixed_Fruit.jpeg" alt="Mix Fruit 50ml" draggable="false" class="w-full h-full object-cover object-center" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none"></div>
+              <div class="hero-caption">
+                <button type="button" onclick="addToBag('LF-50S-MIX', 1)" class="hero-cta-btn">Add • RM 15.34</button>
+                <p class="hero-caption-text">
+                  <strong>Mix Fruit</strong> • Sun-ripened tropical orchard fruits with a light citrus lift.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 5: Sweet Gummy -->
+          <article class="hero-slide" data-slide="4">
+            <div class="hero-slide-frame bg-[#1b1b19]">
+              <img src="images/Sweet_Gummy.jpeg" alt="Sweet Gummy 50ml" draggable="false" class="w-full h-full object-cover object-center" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pointer-events-none"></div>
+              <div class="hero-caption">
+                <button type="button" onclick="addToBag('LF-50S-GUM', 1)" class="hero-cta-btn">Add • RM 15.34</button>
+                <p class="hero-caption-text">
+                  <strong>Sweet Gummy</strong> • Playful berry-sugar accord with a clean, lingering finish.
+                </p>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Bottom Apple-Style Pill Controls & Play/Pause Toggle -->
+        <div class="hero-controls" role="group" aria-label="Carousel pagination">
+          <div class="hero-pill-bar" id="hero-dots">
+            <button type="button" class="hero-dot is-active" data-index="0" aria-label="Slide 1: Breezy Sea" aria-current="true"><span class="hero-dot-fill"></span></button>
+            <button type="button" class="hero-dot" data-index="1" aria-label="Slide 2: Warm Floral"><span class="hero-dot-fill"></span></button>
+            <button type="button" class="hero-dot" data-index="2" aria-label="Slide 3: Vanilla Ice"><span class="hero-dot-fill"></span></button>
+            <button type="button" class="hero-dot" data-index="3" aria-label="Slide 4: Mix Fruit"><span class="hero-dot-fill"></span></button>
+            <button type="button" class="hero-dot" data-index="4" aria-label="Slide 5: Sweet Gummy"><span class="hero-dot-fill"></span></button>
+          </div>
+
+          <button
+            type="button"
+            id="hero-play-toggle"
+            class="hero-play-btn"
+            aria-label="Pause campaign autoplay"
+            title="Pause / Play">
+            <svg id="hero-icon-pause" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+              <rect x="6" y="5" width="4" height="14" />
+              <rect x="14" y="5" width="4" height="14" />
+            </svg>
+            <svg id="hero-icon-play" class="w-3.5 h-3.5 hidden" fill="currentColor" viewBox="0 0 24 24">
+              <polygon points="7,5 19,12 7,19" />
+            </svg>
+          </button>
+        </div>
+      </section>
+      <!-- Editorial Manifesto Strip -->
+      <section class="border-b border-slate-200 bg-[#f5f5f2] px-6 py-12 sm:py-16">
+        <div class="max-w-3xl mx-auto text-center">
+          <span class="block text-[10px] uppercase tracking-[0.24em] text-slate-500 mb-3">Engineered for Tropical Heat</span>
+          <p class="text-lg sm:text-2xl font-light text-slate-900 leading-snug">
+            “Formulated in Malaysia to resist high cabin temperatures without losing top-note clarity. Housed in frosted cobalt glass with a natural beechwood diffuser cap.”
+          </p>
+          <div class="mt-6 flex justify-center gap-3">
+            <a href="shop.html" class="btn btn-primary">Shop All 14 Scents</a>
+            <a href="about.html" class="btn btn-ghost">About LexoFrag</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Signature 50ml Curated Grid (Uses all 5 available product photos) -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-8 py-12 sm:py-16">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 mb-8 border-b border-slate-200">
+          <div>
+            <span class="block text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-1">The Standing Vessels</span>
+            <h2 class="text-xl sm:text-2xl font-light text-slate-900">Signature 50ml Collection</h2>
+          </div>
+          <a href="shop.html" class="text-[11px] uppercase tracking-[0.16em] text-slate-900 underline underline-offset-4 self-start sm:self-auto cursor-pointer">
+            View Full Catalogue (14 Scents)
+          </a>
+        </div>
+
+        <div id="home-signature-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5"></div>
+      </section>
+
+      <!-- Secondary Editions Split Feature -->
+      <section class="border-t border-slate-200">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2">
+          <div class="p-8 sm:p-14 border-b md:border-b-0 md:border-r border-slate-200 flex flex-col justify-between">
+            <div>
+              <span class="block text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-2">10ml Hanging Diffusers</span>
+              <h3 class="text-2xl font-light normal-case tracking-normal text-slate-900 mb-3">Classic &amp; Deluxe 10ml</h3>
+              <p class="text-sm text-slate-600 mb-6 max-w-md">
+                Compact rearview mirror vessels designed for daily commutes. Available in Mix Fruit, Vanilla Ice, Sweet Gummy, Dark Apple, Snowy Sakura, and Frosty Dew.
+              </p>
+            </div>
+            <div>
+              <a href="shop.html?filter=10" class="btn btn-ghost">Shop 10ml Vessels</a>
+            </div>
+          </div>
+
+          <div class="p-8 sm:p-14 flex flex-col justify-between bg-[#f5f5f2]">
+            <div>
+              <span class="block text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-2">50ml Reserve</span>
+              <h3 class="text-2xl font-light normal-case tracking-normal text-slate-900 mb-3">Deluxe 50ml Edition</h3>
+              <p class="text-sm text-slate-600 mb-6 max-w-md">
+                Concentrated reserve blends—Dark Apple, Snowy Sakura, and Frosty Dew—crafted for extended longevity in SUVs and executive sedans.
+              </p>
+            </div>
+            <div>
+              <a href="shop.html?filter=Deluxe%20Edition" class="btn btn-ghost">Shop Deluxe Edition</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/store.js"></script>
+</body>
+</html>

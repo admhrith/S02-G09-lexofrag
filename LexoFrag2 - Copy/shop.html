@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0001cf" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="LexoFrag" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="images/logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="images/icon-192.png" />
+  <title>Shop All Fragrances — LEXOFRAG.</title>
+  <!-- Tailwind CSS v4 Play CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    #reader video {
+      border-radius: 0.75rem;
+      object-fit: cover;
+      width: 100% !important;
+    }
+  </style>
+  <!-- Byredo-inspired theme (unlayered, overrides Tailwind utilities) -->
+  <link rel="stylesheet" href="byredo-theme.css" />
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900" data-page="shop">
+
+  <!-- Page: shop. Header, footer, menu, product modal and bag drawer are injected by js/layout.js -->
+  <div id="storefront-shell" class="flex-1 flex flex-col bg-white">
+
+    <div id="store-page-shop" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-10 sm:py-14">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-8 border-b border-slate-200">
+        <div>
+          <span class="block text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-1">Complete Index</span>
+          <h2 class="text-2xl sm:text-3xl font-light text-slate-900">All Fragrances</h2>
+        </div>
+
+        <div id="shop-filters" class="flex flex-wrap gap-2">
+          <button type="button" data-filter="All" aria-pressed="true" onclick="setShopFilter('All')" class="btn btn-ghost btn-sm">All (14)</button>
+          <button type="button" data-filter="Signature" aria-pressed="false" onclick="setShopFilter('Signature')" class="btn btn-ghost btn-sm">Signature 50ml</button>
+          <button type="button" data-filter="Deluxe Edition" aria-pressed="false" onclick="setShopFilter('Deluxe Edition')" class="btn btn-ghost btn-sm">Deluxe Edition</button>
+          <button type="button" data-filter="Classic Edition" aria-pressed="false" onclick="setShopFilter('Classic Edition')" class="btn btn-ghost btn-sm">Classic 10ml</button>
+          <button type="button" data-filter="10" aria-pressed="false" onclick="setShopFilter('10')" class="btn btn-ghost btn-sm">10ml Only</button>
+          <button type="button" data-filter="50" aria-pressed="false" onclick="setShopFilter('50')" class="btn btn-ghost btn-sm">50ml Only</button>
+        </div>
+      </div>
+
+      <div id="shop-catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </div>
+
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/store.js"></script>
+</body>
+</html>
