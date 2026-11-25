@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0001cf" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="LexoFrag" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="images/logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="images/icon-192.png" />
+  <title>Sign in — LexoFrag Ops</title>
+  <!-- Tailwind CSS v4 Play CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    #reader video {
+      border-radius: 0.75rem;
+      object-fit: cover;
+      width: 100% !important;
+    }
+  </style>
+  <!-- Byredo-inspired theme (unlayered, overrides Tailwind utilities) -->
+  <link rel="stylesheet" href="byredo-theme.css" />
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-900" data-page="login">
+
+  <!-- Admin / Owner sign-in -->
+  <div id="login-view" class="flex flex-1 items-center justify-center p-4 sm:p-6">
+    <div class="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <img src="images/logo.png" alt="LexoFrag logo" class="w-11 h-11 rounded-full" />
+          <div>
+            <h1 class="text-xl font-bold tracking-tight text-slate-900">LexoFrag Ops</h1>
+            <p class="text-xs text-slate-500">Admin &amp; Owner Workspace</p>
+          </div>
+        </div>
+        <a href="index.html" class="text-[11px] uppercase tracking-[0.14em] text-slate-500 hover:text-slate-900 underline cursor-pointer">
+          ← Storefront
+        </a>
+      </div>
+
+      <h2 class="text-base font-semibold text-slate-800 mb-1">Sign in to your workspace</h2>
+      <p class="text-xs text-slate-500 mb-5">Restricted to authorized Admin and Owner accounts.</p>
+
+      <div id="login-error" class="hidden mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-medium text-red-700"></div>
+
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label for="login-email" class="block text-xs font-semibold text-slate-700 mb-1.5">Email Address</label>
+          <input
+            id="login-email"
+            type="email"
+            required
+            placeholder="saif@lexofrag.my"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15"
+          />
+        </div>
+
+        <div>
+          <label for="login-password" class="block text-xs font-semibold text-slate-700 mb-1.5">Password</label>
+          <input
+            id="login-password"
+            type="password"
+            required
+            placeholder="••••••••"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/15"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-semibold text-sm shadow-xs transition cursor-pointer">
+          Sign In
+        </button>
+      </form>
+
+      <div class="mt-6 pt-5 border-t border-slate-200">
+        <p class="text-[11px] font-medium text-slate-500 mb-2.5">Quick Demo Login (Tap to sign in immediately):</p>
+        <div class="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onclick="quickLogin('saif@lexofrag.my', 'lexo123')"
+            class="p-2.5 text-left rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 transition cursor-pointer">
+            <span class="block text-xs font-semibold text-slate-800">Encik Saif</span>
+            <span class="block text-[11px] text-emerald-700 font-medium">Owner • Full Access</span>
+            <span class="block text-[10px] text-slate-400 mt-0.5">saif@lexofrag.my / lexo123</span>
+          </button>
+          <button
+            type="button"
+            onclick="quickLogin('staff@lexofrag.my', 'staff123')"
+            class="p-2.5 text-left rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 transition cursor-pointer">
+            <span class="block text-xs font-semibold text-slate-800">Storeroom Staff</span>
+            <span class="block text-[11px] text-blue-700 font-medium">Admin • Audit Only</span>
+            <span class="block text-[10px] text-slate-400 mt-0.5">staff@lexofrag.my / staff123</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>
